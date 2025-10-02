@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 // クラス名もファイル名に合わせて変更
 public class UndouKinManager_kin : MonoBehaviour
 {
-    // 何秒後に戻るか
+    // 一旦５秒後に戻る。
     public float returnTime = 5.0f;
 
     void Start()
@@ -20,11 +20,11 @@ public class UndouKinManager_kin : MonoBehaviour
         // 指定した秒数だけ待機
         yield return new WaitForSeconds(returnTime);
 
-        // --- test_kinシーンに戻る前にスコアを設定 ---
+        // シーンに戻る前にスコアを設定
         // GameScore_kin を参照するように変更
         GameScore_kin.score = 100;
 
-        // test_kinシーンに移動
-        SceneManager.LoadScene("test_kin");
+        // Meinシーンに移動
+        SceneManager.LoadScene("Main");
     }
 }
