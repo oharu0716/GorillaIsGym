@@ -1,37 +1,32 @@
 using UnityEngine;
+using System.Collections;
 
 public class CharaController_kin : MonoBehaviour
 {
-    const int MinLane = -2;
-    const int MaxLane = 2;
-    const float LaneWidth = 1.0f;
-    const int DefaultLife = 3;
+    const int MinLane = -1;
+    const int MaxLane = 1;
+    const float LaneWidth = 0.2f;
     const float StunDuration = 0.5f;
+    const float MoveDuration = 0.01f;
 
     CharacterController controller;
     Animator animator;
 
     Vector3 moveDirection = Vector3.zero;
-    int targetLane;
-    int life = DefaultLife;
     float recoverTime = 0.0f;
+    private Coroutine moveCoroutine;
 
     public float gravity;
     public float speedZ;
-    public float speedX;
-
     public float speedJump;
     public float accelerationZ;
 
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-    public int Life()
-    {
-        return life;
-    }
     bool IsStun()
     {
-        return recoverTime > 0.0f || life <= 0;
+        return recoverTime > 0.0f;
     }
 
     void Start()
@@ -44,10 +39,30 @@ public class CharaController_kin : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //デバッグ用
-        if (Input.GetKeyDown("left")) MoveToLeft();
-        if (Input.GetKeyDown("right")) MoveToRight();
-        if (Input.GetKeyDown("space")) Jump();
+        // 左キーを「押した瞬間」
+        if (Input.GetKeyDown("left"))
+        {
+            MoveToLane(MinLane); // 左のレーン(-1)へ移動開始
+        }
+        // 右キーを「押した瞬間」
+        else if (Input.GetKeyDown("right"))
+        {
+            MoveToLane(MaxLane); // 右のレーン(1)へ移動開始
+        }
+
+        // 左キーか右キーを「離した瞬間」
+        if (Input.GetKeyUp("left") || Input.GetKeyUp("right"))
+        {
+            MoveToLane(0); // 真ん中のレーン(0)へ移動開始
+        }
+
+        // スペースキーを「押した瞬間」
+        if (Input.GetKeyDown("space"))
+        {
+            Jump();
+        }
+        // ----- ★キー入力の変更はここまで -----
+
 
         if (IsStun())
         {
@@ -58,13 +73,12 @@ public class CharaController_kin : MonoBehaviour
         }
         else
         {
-
-            //徐々に加速して、Z方向に常に前線
+            // 前に進む力の計算
             float acceleratedZ = moveDirection.z + (accelerationZ * Time.deltaTime);
             moveDirection.z = Mathf.Clamp(acceleratedZ, 0, speedZ);
-            //X方向は目標のポジションまでの差分の割合で速度を計算
-            float ratioX = (targetLane * LaneWidth - transform.position.x) / LaneWidth;
-            moveDirection.x = ratioX * speedX;
+
+            // 横移動はコルーチンが担当。moveDirection.x は基本的に0らしい
+            moveDirection.x = 0;
         }
         //重力分の力を毎フレーム追加
         moveDirection.y -= gravity * Time.deltaTime;
@@ -76,19 +90,56 @@ public class CharaController_kin : MonoBehaviour
         //速度が０以上なら走っているフラグをtrueにする
         animator.SetBool("run", moveDirection.z > 0.0f);
     }
-    //左のレーンに移動を開始
-    public void MoveToLeft()
+
+    // ★レーン移動を開始させる命令
+    public void MoveToLane(int targetLane)
     {
         if (IsStun()) return;
-        if (controller.isGrounded && targetLane > MinLane) targetLane--;
 
+        // もしすでに移動中だったら、古い動きは止める
+        if (moveCoroutine != null)
+        {
+            StopCoroutine(moveCoroutine);
+        }
+
+        // 新しい移動のコルーチンを開始する！
+        moveCoroutine = StartCoroutine(MoveLaneCoroutine(targetLane));
     }
-    //右のレーンに移動を開始
-    public void MoveToRight()
-    {
-        if (IsStun()) return;
-        if (controller.isGrounded && targetLane < MaxLane) targetLane++;
 
+    // ★ピッタリ0.1秒で移動するためのコルーチンの本体！
+    IEnumerator MoveLaneCoroutine(int targetLane)
+    {
+        float startPositionX = transform.position.x; // 今いる場所
+        float endPositionX = targetLane * LaneWidth;  // 行きたい場所
+        float elapsedTime = 0f; // 経過時間タイマー
+
+        // 経過時間が MoveDuration(0.1秒) になるまで、この中を繰り返す
+        while (elapsedTime < MoveDuration)
+        {
+            // 経過時間を更新
+            elapsedTime += Time.deltaTime;
+            // 進捗度を計算 (0.0 ～ 1.0 の値になる)
+            float progress = elapsedTime / MoveDuration;
+
+            // Lerp（ラープ）という魔法で、スタートとゴールの間の今の位置を計算する
+            float newX = Mathf.Lerp(startPositionX, endPositionX, progress);
+
+            // 計算した位置まで、キャラクターを動かすための「移動量」を計算
+            Vector3 move = new Vector3(newX - transform.position.x, 0, 0);
+
+            // キャラクターを実際に動かす！
+            controller.Move(move);
+
+            // ここで一旦休憩して、次のフレームまで待つ
+            yield return null;
+        }
+
+        // ループが終わったら、誤差をなくすためにピッタリの位置に合わせる
+        Vector3 finalMove = new Vector3(endPositionX - transform.position.x, 0, 0);
+        controller.Move(finalMove);
+
+        // 移動が終わったので、覚えていたコルーチンを空にする
+        moveCoroutine = null;
     }
     public void Jump()
     {
@@ -107,24 +158,12 @@ public class CharaController_kin : MonoBehaviour
         if (IsStun()) return;
         if (hit.gameObject.CompareTag("Robo"))
         {
-            //ライフを減らして気絶状態に移行
-            life--;
             recoverTime = StunDuration;
             //ダメージトリガーを設定
             animator.SetTrigger("damage");
             //ヒットしたオブジェクトは消去
             Destroy(hit.gameObject);
         }
-        // 回復アイテムに衝突した場合の処理
-        if (hit.gameObject.CompareTag("Recovery"))
-        {
-            // ライフが上限(DefaultLife)未満の場合のみ回復
-            if (life < DefaultLife)
-            {
-                life++;
-            }
-            // ヒットした回復アイテムは消去
-            Destroy(hit.gameObject);
-        }
+
     }
 }
