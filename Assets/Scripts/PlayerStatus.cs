@@ -3,11 +3,13 @@ using UnityEngine;
 
 public class PlayerStatus : MonoBehaviour
 {
+    public HeartUIManager heartUIManager;
+
     //各ゲージの初期値
     public int friendliness = 0;
     public int manpuku = 100;
     public int stress = 0;
-    public int hp = 100;
+    public int hp = 5;
 
     //増減の調整用の値
     public int friendlinessIncreaseAmount; //おふろで友情度を上げる値
@@ -23,7 +25,7 @@ public class PlayerStatus : MonoBehaviour
     const int max_friendliness = 300;
     const int max_manpuku = 100;
     const int max_stress = 100;
-    const int max_hp = 100;
+    const int max_hp = 5;
 
     private static PlayerStatus instance;
 
@@ -135,6 +137,21 @@ public class PlayerStatus : MonoBehaviour
             //死亡処理
         }
 
+    }
+
+    void Update()
+    {
+        //テスト用の処理
+        if (Input.GetMouseButtonDown(0))
+        {
+            hp--;
+            heartUIManager.UpdateLife(hp);
+        }
+        else if (Input.GetMouseButtonDown(1))
+        {
+            hp++;
+            heartUIManager.UpdateLife(hp);
+        }
     }
 
 
