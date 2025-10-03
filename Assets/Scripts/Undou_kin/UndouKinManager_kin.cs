@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 // クラス名もファイル名に合わせて変更
 public class UndouKinManager_kin : MonoBehaviour
 {
-    // 一旦５秒後に戻る。
-    public float returnTime = 5.0f;
+    // 20秒後に戻る
+    public float returnTime = 100.0f;
 
     void Start()
     {

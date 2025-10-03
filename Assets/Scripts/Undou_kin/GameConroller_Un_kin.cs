@@ -12,18 +12,6 @@ public class GameConroller_Un_kin : MonoBehaviour
     {
         int score = CalcScore();
         scoreText.text = $"Score : {score}m";
-        if (nejiko.Life() <= 0)
-        {
-            enabled = false;
-
-            if (PlayerPrefs.GetInt("HighScore") < score)
-            {
-                PlayerPrefs.SetInt("HighScore", score);
-            }
-            Invoke("ReturnToTitle", 2.0f);
-        }
-
-
     }
     int CalcScore()
     {
