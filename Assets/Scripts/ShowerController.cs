@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class ShowerController : MonoBehaviour
 {
+    public static bool TookShower = false;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -16,6 +18,7 @@ public class ShowerController : MonoBehaviour
 
     void ReturnToMainScene()
     {
+        TookShower = true; // フラグONにする
         SceneManager.LoadScene("Main"); // Mainシーンに戻る
     }
 
