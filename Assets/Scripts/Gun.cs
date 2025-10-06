@@ -5,6 +5,7 @@ public class Gun : MonoBehaviour
 {
     public Camera cam;
     public float range = 100f;
+    public ScoreManager scoreManager;
 
     void Update()
     {
@@ -25,6 +26,20 @@ public class Gun : MonoBehaviour
             if (target != null)
             {
                 target.Hit();
+
+                //タグに応じてスコアを加算
+                if (hit.transform.CompareTag("1000"))
+                {
+                    scoreManager.AddScore(1000);
+                }
+                else if (hit.transform.CompareTag("3000"))
+                {
+                    scoreManager.AddScore(3000);
+                }
+                else if (hit.transform.CompareTag("5000"))
+                {
+                    scoreManager.AddScore(5000);
+                }
             }
         }
     }
