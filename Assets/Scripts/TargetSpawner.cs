@@ -4,14 +4,14 @@ using UnityEngine.LightTransport;
 
 public class TargetSpawner : MonoBehaviour
 {
-    public GameObject targetPrefab; //ターゲットのプレハブ
+    public GameObject[] targetPrefabs; //ターゲットのプレハブ
     public float spawnInterval = 2f; //出現間隔
     public Vector3 spawnArea = new Vector3(8f, 2f, 8f); //出現範囲
 
     void Start()
     {
         // 1秒後から「SpawnTarget」を呼び出し、以後spawnIntervalごとに繰り返す
-        InvokeRepeating("SpawnTarget", 1f, spawnInterval);
+        InvokeRepeating(nameof(SpawnTarget), 1f, spawnInterval);
     }
 
     void SpawnTarget()
@@ -26,10 +26,12 @@ public class TargetSpawner : MonoBehaviour
             Random.Range(-spawnArea.z, spawnArea.z)  
         );
 
-        //第1引数 … 出現させるプレハブ
+        if (targetPrefabs.Length == 0) return;
+        GameObject selectedPrefab = targetPrefabs[Random.Range(0, targetPrefabs.Length)];
+        //第1引数 … 選ばれたプレハブ
         //第2引数 … 出現位置（randomPos）
         //第3引数 … 回転情報。Quaternion.identity は「回転なし（デフォルト）」
-        Instantiate(targetPrefab, randomPos, Quaternion.identity);
+        Instantiate(selectedPrefab, randomPos, Quaternion.identity);
     }
     
 }

@@ -148,7 +148,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcbcd112fe4bc4842a37961b7ceb8850, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetPrefab: {fileID: 3919980565945836850, guid: 76f3289f426a8164dace61c64dd21a22, type: 3}
+  targetPrefabs:
+  - {fileID: 3919980565945836850, guid: 76f3289f426a8164dace61c64dd21a22, type: 3}
+  - {fileID: 3182673170195564258, guid: 21b4e3630f032e045b452ebea181ac9e, type: 3}
+  - {fileID: 123038020822699694, guid: 0cf32f0bf13054b41a96bbcec0514e13, type: 3}
+  - {fileID: 193099375009214981, guid: ce113af50283e4343aa4be22f723de61, type: 3}
+  - {fileID: 8293542172973961784, guid: b2d6a50fddfedc14797c7d8b839e6b7e, type: 3}
   spawnInterval: 0.5
   spawnArea: {x: 8, y: 2, z: 8}
 --- !u!4 &65120130
