@@ -9,7 +9,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Animator))]
 public class EggClicker : MonoBehaviour
 {
-    private Animator animator;
+    public Animator animator;
     public ParticleSystem effectObject;       // エフェクトのプレハブ or Image
     public GameObject eggObject;          // 卵オブジェクト
     public GameObject characterObject;    // 生まれるキャラ
@@ -20,14 +20,14 @@ public class EggClicker : MonoBehaviour
     void Start()
     {
         // Animator取得
-        animator = GetComponent<Animator>();
+        animator = eggObject.GetComponent<Animator>();
 
         // Image の透明部分はクリックを無効化（アルファ閾値を設定）
-        var image = GetComponent<Image>();
+        var image = eggObject.gameObject.GetComponent<Image>();
         image.alphaHitTestMinimumThreshold = 0.5f;
 
         // Button にクリックイベント登録
-        var button = GetComponentInChildren<Button>();
+        var button = eggObject.GetComponentInChildren<Button>();
         button.onClick.AddListener(OnClickEgg);
     }
 
@@ -49,7 +49,6 @@ public class EggClicker : MonoBehaviour
 
         // エフェクト表示（アニメ or パーティクル再生）
         effectObject.Play();
-        Debug.Log(characterObject);
 
         // 卵を非表示にする
         eggObject.SetActive(false);
@@ -57,8 +56,10 @@ public class EggClicker : MonoBehaviour
         // 数秒後にキャラ出現
         Debug.Log("キャラ出現");
         characterObject.SetActive(true);
-        // 卵を非表示にする
-        eggObject.SetActive(false);
+
+        //HatchManagerのSetUIStateでポップアップを消してもらう
+        yield return new WaitForSeconds(5f);
+        hatch.SetUIState(HatchManager.UIState.PopUp);
 
     }
 }

@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +12,7 @@ public class HatchManager : MonoBehaviour
         ThisEgg,
         Hatch,      // 卵がカタカタ揺れてる
         PopUp,      // 「生まれました！」などのポップアップ
+        Explain
     }
 
     private UIState currentState;
@@ -20,6 +23,7 @@ public class HatchManager : MonoBehaviour
     public GameObject[] thisEggUI;
     public GameObject hatchUI;
     public GameObject[] popUpUI;
+    public GameObject explainUI;
 
     void Start()
     {
@@ -46,6 +50,7 @@ public class HatchManager : MonoBehaviour
         // hatchUI.SetActive(false);
         // popUpUI[0].SetActive(false);
         // popUpUI[1].SetActive(false);
+        // explainUI.SetActive(false);
 
         switch (newState)
         {
@@ -56,6 +61,7 @@ public class HatchManager : MonoBehaviour
                 thisEggUI[0].SetActive(false);
                 thisEggUI[1].SetActive(false);
                 hatchUI.SetActive(false);
+                explainUI.SetActive(false);
                 startUI[0].SetActive(true);
                 startUI[1].SetActive(true);
                 Debug.Log("Start");
@@ -73,8 +79,21 @@ public class HatchManager : MonoBehaviour
                 break;
             case UIState.PopUp:
                 popUpUI[0].SetActive(true);
+                //数秒後に説明画面に切り替えるコルーチンへ
+                StartCoroutine(GotoExplain());
                 Debug.Log("PopUp");
                 break;
+            case UIState.Explain:
+                popUpUI[0].SetActive(false);
+                popUpUI[1].SetActive(false);
+                explainUI.SetActive(true);
+                break;
         }
+    }
+
+    IEnumerator GotoExplain()
+    {
+        yield return new WaitForSeconds(4.0f);
+        SetUIState(UIState.Explain);
     }
 }
