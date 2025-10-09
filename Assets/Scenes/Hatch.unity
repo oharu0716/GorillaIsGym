@@ -200,7 +200,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 106122915}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 157977344}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SetStateThisEgg
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &106122915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -470,12 +482,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 751266443}
-  - {fileID: 106122913}
-  - {fileID: 2027309297}
-  - {fileID: 634581366}
-  - {fileID: 721503569}
   - {fileID: 1460399005}
   - {fileID: 2125386902}
+  - {fileID: 721503569}
+  - {fileID: 634581366}
+  - {fileID: 2027309297}
+  - {fileID: 106122913}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -655,6 +667,7 @@ MonoBehaviour:
   eggObject: {fileID: 634581365}
   characterObject: {fileID: 1460399004}
   scene: {fileID: 49472550284770760, guid: 20e2f6d064c362143ac5ff67aabe8c94, type: 3}
+  hatch: {fileID: 157977344}
 --- !u!114 &634581371
 MonoBehaviour:
   m_ObjectHideFlags: 0

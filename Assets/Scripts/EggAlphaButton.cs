@@ -15,6 +15,7 @@ public class EggClicker : MonoBehaviour
     public GameObject characterObject;    // 生まれるキャラ
 
     public ChangeScene scene;
+    public HatchManager hatch;
 
     void Start()
     {
@@ -35,6 +36,9 @@ public class EggClicker : MonoBehaviour
         // AnimatorにTriggerを送る（Shakeなど）
         animator.SetTrigger("Shake");
 
+        //HatchManagerのSetUIStateでポップアップを消してもらう
+        hatch.SetUIState(HatchManager.UIState.Hatch);
+
         // 生まれる演出を数秒後に開始
         StartCoroutine(HatchSequence());
     }
@@ -45,15 +49,16 @@ public class EggClicker : MonoBehaviour
 
         // エフェクト表示（アニメ or パーティクル再生）
         effectObject.Play();
+        Debug.Log(characterObject);
 
         // 卵を非表示にする
         eggObject.SetActive(false);
 
         // 数秒後にキャラ出現
-        yield return new WaitForSeconds(0.3f);
+        Debug.Log("キャラ出現");
         characterObject.SetActive(true);
+        // 卵を非表示にする
+        eggObject.SetActive(false);
 
-        //Mainシーンへ
-        scene.GotoMain();
     }
 }
