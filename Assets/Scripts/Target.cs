@@ -1,20 +1,54 @@
+using TMPro;
 using UnityEngine;
 
 public class Target : MonoBehaviour
 {
-    //ターゲットが自然消滅するまでの時間
-    //Inspectorから自由に変更可能
     public float lifeTime = 3f;
-    
+    public GameObject hitEffectPrefab; // エフェクトのプレハブを指定
+    public GameObject scorePopupPrefab; 
+
     void Start()
     {
-        //オブジェクトがlifeTime秒後の削除されるように設定
         Destroy(gameObject, lifeTime);
     }
 
-    public void Hit()
+    public void Hit(int score, Vector3 position)
     {
-        Destroy(gameObject);
-        Debug.Log("Hit!");
+        // Debug.Log(score+"ポジション"+position);
+        // if (hitEffectPrefab != null)
+        // {
+        //     // エフェクトをターゲット位置に生成
+        //     Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
+
+        //     //オブジェクトの位置にスコアを表示
+        //     TextMeshProUGUI scorePopup = Instantiate(
+        //         scoreText,
+        //         position,
+        //         Quaternion.identity
+        //     );
+        //     Debug.Log(scorePopup);
+
+        //     scorePopup.text = score.ToString();
+        // }
+
+        // Destroy(gameObject);
+
+        if (hitEffectPrefab != null)
+        Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
+
+    if (scorePopupPrefab != null)
+    {
+        // Canvasを出現位置に生成
+        GameObject popup = Instantiate(scorePopupPrefab, position + Vector3.up * 0.5f, Quaternion.identity);
+
+        // TextMeshProUGUI を探してスコアを表示
+        var text = popup.GetComponentInChildren<TextMeshProUGUI>();
+        text.text = $"+{score}";
+    }
+
+    Destroy(gameObject);
     }
 }
+
+
+

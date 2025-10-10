@@ -26,6 +26,7 @@ public class TargetSpawner : MonoBehaviour
             Random.Range(-spawnArea.z, spawnArea.z)  
         );
 
+        //プレハブが１つも登録されていなければ何もしない
         if (targetPrefabs.Length == 0) return;
         GameObject selectedPrefab = targetPrefabs[Random.Range(0, targetPrefabs.Length)];
         //第1引数 … 選ばれたプレハブ

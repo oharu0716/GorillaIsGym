@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Gun : MonoBehaviour
@@ -25,21 +24,32 @@ public class Gun : MonoBehaviour
             Target target = hit.transform.GetComponent<Target>();
             if (target != null)
             {
-                target.Hit();
 
-                //タグに応じてスコアを加算
+                int score = 0;
+                // 📍 当たったワールド座標
+                Vector3 hitPosition = hit.point;
+
+                // CompareTag で安全にタグ判定
                 if (hit.transform.CompareTag("1000"))
                 {
+                    score = 1000;
                     scoreManager.AddScore(1000);
                 }
                 else if (hit.transform.CompareTag("3000"))
                 {
+                    score = 3000;
                     scoreManager.AddScore(3000);
                 }
                 else if (hit.transform.CompareTag("5000"))
                 {
+                    score = 5000;
                     scoreManager.AddScore(5000);
                 }
+                else
+                {
+                    scoreManager.AddScore(100);
+                }
+                target.Hit(score,hitPosition);
             }
         }
     }
