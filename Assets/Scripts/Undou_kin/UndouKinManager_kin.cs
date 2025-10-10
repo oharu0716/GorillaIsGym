@@ -22,7 +22,7 @@ public class UndouKinManager_kin : MonoBehaviour
 
         // シーンに戻る前にスコアを設定
         // GameScore_kin を参照するように変更
-        GameScore_kin.score = 100;
+     //   GameScore_kin.score = 100;
 
         // Meinシーンに移動
         SceneManager.LoadScene("Main");
