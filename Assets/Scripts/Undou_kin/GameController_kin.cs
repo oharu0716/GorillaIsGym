@@ -55,7 +55,7 @@ public class GameController_kin : MonoBehaviour
         state = State.Play;
         chara.SetSteerActive(true);
         blocks.SetActive(true);
-        chara.Flap();
+       // chara.Flap();
 
         stateText.gameObject.SetActive(false);
         stateText.text = "";

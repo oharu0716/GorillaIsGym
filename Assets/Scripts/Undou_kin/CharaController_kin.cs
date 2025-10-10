@@ -1,18 +1,21 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
+// ファイル名は「CharaController_kin.cs」にしてください
 public class CharaController_kin : MonoBehaviour
 {
-    Rigidbody2D rb2d;
-    Animator animator;
-    float angle;
-    bool isDead;
+    // --- public変数（UnityエディタのInspectorウィンドウで調整可能）---
+    [Header("ジャンプの設定")]
+    public float jumpForce = 15f; // ジャンプの初期パワー
+    public float jumpCutMultiplier = 0.5f; // ボタンを離した時にジャンプを弱める割合
 
-    public float maxHeight;
-    public float flapVelocity;
-    public float relativeVelocityX;
-    public GameObject sprite;
+    [Header("参照するオブジェクト")]
+    public GameObject sprite; // キャラクターのスプライト
+    // --------------------------------------------------------------------
+
+    private Rigidbody2D rb2d;
+    private Animator animator;
+    private bool isDead;
+    private bool isGrounded; // 地面に接地しているか
 
     public bool IsDead()
     {
@@ -27,52 +30,57 @@ public class CharaController_kin : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") && transform.position.y < maxHeight)
-        {
-            Flap();
-        }
-        ApplyAngle();
-        animator.SetBool("flap", angle >= 0.0f && !isDead);
-
-    }
-    public void Flap()
-    {
         if (isDead) return;
-        // isKinematicをbodyTypeを使った判定に変更
-        if (rb2d.bodyType == RigidbodyType2D.Kinematic) return;
-        rb2d.linearVelocity = new Vector2(0.0f, flapVelocity);
 
-    }
-    void ApplyAngle()
-    {
-        float targetAngle;
-
-        if (isDead)
+        // 地面にいて、ジャンプボタンが押された瞬間の処理
+        if (Input.GetButtonDown("Fire1") && isGrounded)
         {
-            targetAngle = 180f;
-
+            // 上向きに力を加える
+            rb2d.linearVelocity = new Vector2(rb2d.linearVelocity.x, jumpForce);
+            isGrounded = false; // ジャンプしたので接地判定をOFFに
         }
-        else
+
+        // ジャンプボタンが離された瞬間の処理
+        if (Input.GetButtonUp("Fire1"))
         {
-            targetAngle =
-            Mathf.Atan2(rb2d.linearVelocityY, relativeVelocityX) * Mathf.Rad2Deg;
+            // キャラがまだ上昇中（Y軸の速度がプラス）の場合
+            if (rb2d.linearVelocity.y > 0)
+            {
+                // 上昇の勢いを減衰させる（短いジャンプになる）
+                rb2d.linearVelocity = new Vector2(rb2d.linearVelocity.x, rb2d.linearVelocity.y * jumpCutMultiplier);
+            }
         }
-        angle = Mathf.Lerp(angle, targetAngle, Time.deltaTime * 10f);
-
-        sprite.transform.localRotation = Quaternion.Euler(0, 0, angle);
-
     }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (isDead) return;
-        Camera.main.SendMessage("Clash");
-        isDead = true;
-
+        
+        // 衝突した相手のタグが "underGrounds" だったら
+        if (collision.gameObject.CompareTag("underGrounds"))
+        {
+            // 接地フラグをtrueにする
+            isGrounded = true; 
+        }
+        else // "underGrounds" 以外のオブジェクトに衝突した場合
+        {
+            Camera.main.SendMessage("Clash");
+            isDead = true;
+        }
     }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        // 離れた相手のタグが "underGrounds" だったら
+        if (collision.gameObject.CompareTag("underGrounds"))
+        {
+            // 接地フラグをfalseにする
+            isGrounded = false; 
+        }
+    }
+
     public void SetSteerActive(bool active)
     {
-        // isKinematicをbodyTypeを使った設定に変更
-
         rb2d.bodyType = active ? RigidbodyType2D.Dynamic : RigidbodyType2D.Kinematic;
     }
 }
