@@ -9,6 +9,7 @@ public class GaugeUIController : MonoBehaviour
     public Image friendlinessGauge;
     public Image manpukuGauge;
     public Image stressGauge;
+    public EvolutionManager evolutionManager;
 
     float timer = 0;
 
@@ -22,7 +23,15 @@ public class GaugeUIController : MonoBehaviour
         ps = PlayerStatus.instance;
 
         // 前の状態をそのまま表示（アニメーションなし）
-        friendlinessGauge.fillAmount = ps.prev_friendliness / 100f;
+        if (ps.prev_friendliness < 100)
+        {
+            friendlinessGauge.fillAmount = ps.prev_friendliness / 100f;
+        }
+        else if (ps.prev_friendliness < 200)
+        {
+            friendlinessGauge.fillAmount = (ps.prev_friendliness - 100) / 100f;
+        }
+
         manpukuGauge.fillAmount = ps.prev_manpuku / 100f;
         stressGauge.fillAmount = ps.prev_stress / 100f;
         heart.ShowPrevHearts(ps.prev_hp);
@@ -32,10 +41,30 @@ public class GaugeUIController : MonoBehaviour
 
     void UpdateAllGauges()
     {
-        friendlinessGauge.DOFillAmount(ps.friendliness / 100f, duration);
-        manpukuGauge.DOFillAmount(ps.manpuku / 100f, duration);
-        stressGauge.DOFillAmount(ps.stress / 100f, duration);
         heart.UpdateLife(ps.hp);
+        if (ps.prev_friendliness < 100)
+        {
+            friendlinessGauge.fillAmount = ps.prev_friendliness / 100f;
+        }
+        else if (ps.prev_friendliness < 200)
+        {
+            friendlinessGauge.DOFillAmount((ps.friendliness - 100) / 100f, duration);
+        }
+        manpukuGauge.DOFillAmount(ps.manpuku / 100f, duration);
+        stressGauge.DOFillAmount(ps.stress / 100f, duration)
+        .OnComplete(() =>
+        {
+            if (ps.friendliness >= 100 && ps.isEvolution1 == false)
+            {
+                evolutionManager.Evolution(ps.friendliness);
+                ps.isEvolution1 = true;
+            }
+            else if (ps.friendliness >= 200 && ps.isEvolution2 == false)
+            {
+                evolutionManager.Evolution(ps.friendliness);
+                ps.isEvolution2 = true;
+            }
+        }); ;
     }
 
     void Update()

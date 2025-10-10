@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayerStatus : MonoBehaviour
 {
     public HeartUIManager heartUIManager;
+    public CharacterUIController characterUIController;
 
 
     //各ゲージの初期値
@@ -15,6 +16,10 @@ public class PlayerStatus : MonoBehaviour
     public int stress = 0;
     public int hp = 0;
     public List<Food> food_list;
+
+    bool isDeath = false;
+    public bool isEvolution1;
+    public bool isEvolution2;
 
     //各ゲージのMAX
     const int max_friendliness = 300;
@@ -136,9 +141,19 @@ public class PlayerStatus : MonoBehaviour
         manpuku = Mathf.Max(0, manpuku - amount);
         Debug.Log($"満腹度Down!現在の満腹度 {manpuku}" + "減った値" + amount);
 
-        if (manpuku <= 0)
+        if (manpuku == 0 && isDeath == false)
         {
-            //死亡処理
+            isDeath = true;
+
+            if (friendliness < 100)
+            {
+                Debug.Log("Blend呼ぶ");
+                characterUIController.Blend(0); 
+            }
+            else if (friendliness < 200)
+            {
+                characterUIController.Blend(2);
+            }
         }
     }
 
@@ -146,9 +161,19 @@ public class PlayerStatus : MonoBehaviour
     {
         manpuku = Mathf.Max(0, manpuku - manpukuDecreasePerSec);
 
-        if (manpuku <= 0)
+         if (manpuku == 0 && isDeath == false)
         {
-            //死亡処理
+            isDeath = true;
+
+            if (friendliness < 100)
+            {
+                Debug.Log("Blend呼ぶ");
+                characterUIController.Blend(0); 
+            }
+            else if (friendliness < 200)
+            {
+                characterUIController.Blend(2);
+            }
         }
     }
 
@@ -158,9 +183,19 @@ public class PlayerStatus : MonoBehaviour
         stress = Mathf.Min(max_stress, stress + stressIncreaseAmount);
         Debug.Log($"ストレスUP! 現在のストレス度 {stress}" + "増えた値" + stressIncreaseAmount);
 
-        if (stress >= 100)
+        if (stress >= 100 && isDeath == false)
         {
-            //死亡処理
+            isDeath = true;
+
+            if (friendliness < 100)
+            {
+                Debug.Log("Blend呼ぶ");
+                characterUIController.Blend(0); 
+            }
+            else if (friendliness < 200)
+            {
+                characterUIController.Blend(2);
+            }
         }
     }
 
@@ -168,9 +203,19 @@ public class PlayerStatus : MonoBehaviour
     {
         stress = Mathf.Min(max_stress, stress + stressIncreasePerSec);
 
-        if (stress >= 100)
+        if (stress >= 100 && isDeath == false)
         {
-            //死亡処理
+            isDeath = true;
+
+            if (friendliness < 100)
+            {
+                Debug.Log("Blend呼ぶ");
+                characterUIController.Blend(0); 
+            }
+            else if (friendliness < 200)
+            {
+                characterUIController.Blend(2);
+            }
         }
     }
 
@@ -214,9 +259,19 @@ public class PlayerStatus : MonoBehaviour
         hp = Mathf.Max(0, hp - hpDecreaseAmount);
         Debug.Log($"HP減少！ 現在のHP: {hp}" + "減った値" + hpDecreaseAmount);
 
-        if (hp <= 0)
+        if (hp <= 0 && isDeath == false)
         {
-            //死亡処理
+            isDeath = true;
+
+            if (friendliness < 100)
+            {
+                Debug.Log("Blend呼ぶ");
+                characterUIController.Blend(0); 
+            }
+            else if (friendliness < 200)
+            {
+                characterUIController.Blend(2);
+            }
         }
 
     }

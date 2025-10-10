@@ -9,34 +9,15 @@ public class HeartUIManager : MonoBehaviour
 {
     public GameObject[] hearts;
 
+
     //遷移先のシーンで増えた分だけアニメーションで表示
     public void UpdateLife(int life)
     {
-        // Debug.Log("HearManager");
-        // Debug.Log(life);
-        // for (int i = 0; i < hearts.Length; i++)
-        // {
-        //     RectTransform rt = hearts[i].GetComponent<RectTransform>();
-
-        //     if (i < life)
-        //     {
-        //         rt.localScale = Vector3.one * 0.002f;
-        //         hearts[i].SetActive(true);
-        //         rt.DOScale(0.28f, 0.6f)
-        //             .SetEase(Ease.OutBack, 1f);
-        //     }
-        //     else
-        //     {
-        //         rt.DOScale(0.002f, 0.6f)
-        //             .SetEase(Ease.OutBack, 1f);
-        //         hearts[i].SetActive(false);
-        //     }
-
-        // }
-
+      
         for (int i = 0; i < hearts.Length; i++)
         {
             RectTransform rt = hearts[i].GetComponent<RectTransform>();
+            rt.DOKill(true);
 
             if (i < life)
             {
@@ -46,6 +27,8 @@ public class HeartUIManager : MonoBehaviour
                     hearts[i].SetActive(true);
                     rt.localScale = Vector3.one * 0.002f; // 小さくしておく
                     rt.DOScale(0.28f, 0.4f).SetEase(Ease.OutBack);
+
+                    
                 }
                 // 既に表示されてるものは何もしない
             }
@@ -54,9 +37,10 @@ public class HeartUIManager : MonoBehaviour
                 // ハートを非表示（減ったとき）
                 if (hearts[i].activeSelf)
                 {
+                    var target = hearts[i]; // ←ここで固定！
                     rt.DOScale(0.002f, 0.4f)
                       .SetEase(Ease.InBack)
-                      .OnComplete(() => hearts[i].SetActive(false));
+                      .OnComplete(() => target.SetActive(false)); // ←iではなくtargetを使う
                 }
                 // 既に非表示なら何もしない
             }
