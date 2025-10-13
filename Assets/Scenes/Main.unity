@@ -610,9 +610,12 @@ MonoBehaviour:
   friendlinessGauge: {fileID: 1724089897}
   manpukuGauge: {fileID: 446459214}
   stressGauge: {fileID: 1112489478}
-  evolutionManager: {fileID: 125458305}
-  heart: {fileID: 1444998695}
+  character:
+  - {fileID: 855111635}
+  - {fileID: 390964964}
   duration: 1
+  heart: {fileID: 1444998695}
+  evolutionManager: {fileID: 125458305}
 --- !u!4 &846928042
 Transform:
   m_ObjectHideFlags: 0
@@ -1202,6 +1205,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1850057912}
     m_Modifications:
+    - target: {fileID: 3797472646968509007, guid: ec2b30912fd290144bb49862c4d1a1a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3797472646968509007, guid: ec2b30912fd290144bb49862c4d1a1a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3797472646968509007, guid: ec2b30912fd290144bb49862c4d1a1a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1930876664}
+    - target: {fileID: 3797472646968509007, guid: ec2b30912fd290144bb49862c4d1a1a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3797472646968509007, guid: ec2b30912fd290144bb49862c4d1a1a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: GotoHatch
+      objectReference: {fileID: 0}
+    - target: {fileID: 3797472646968509007, guid: ec2b30912fd290144bb49862c4d1a1a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: ChangeScene, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3797472646968509007, guid: ec2b30912fd290144bb49862c4d1a1a9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 5319396242576809797, guid: ec2b30912fd290144bb49862c4d1a1a9, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2066,6 +2097,10 @@ PrefabInstance:
     - target: {fileID: 726368009421768689, guid: 0eda33095ffe64142b7b18579c4df6d8, type: 3}
       propertyPath: m_Name
       value: Character
+      objectReference: {fileID: 0}
+    - target: {fileID: 726368009421768689, guid: 0eda33095ffe64142b7b18579c4df6d8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5605473053443832718, guid: 0eda33095ffe64142b7b18579c4df6d8, type: 3}
       propertyPath: m_Pivot.x

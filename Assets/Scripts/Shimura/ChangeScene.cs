@@ -38,4 +38,9 @@ public class ChangeScene : MonoBehaviour
         heart.UpdateLife(ps.hp);
         SceneManager.LoadScene("Excercise");
     }
+
+    public void GotoHatch()
+    {
+        SceneManager.LoadScene("Hatch");
+    }
 }

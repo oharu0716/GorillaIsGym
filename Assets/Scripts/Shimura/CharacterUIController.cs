@@ -13,9 +13,7 @@ public class CharacterUIController : MonoBehaviour
     [SerializeField] private GameObject popUp;
     [SerializeField] private GameObject UIs;
     [SerializeField] private GameObject restartButton;
-
-
-
+    
     public void Blend(int i)
     {
         foreach (var img in UIs.GetComponentsInChildren<Image>())

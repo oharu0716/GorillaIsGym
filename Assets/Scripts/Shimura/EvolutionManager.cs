@@ -13,6 +13,12 @@ public class EvolutionManager : MonoBehaviour
     [SerializeField] private GameObject popUp;
     public CharacterUIController characterUIController;
     public ChangeScene scene;
+    PlayerStatus ps;
+
+    void Start()
+    {
+        ps = PlayerStatus.instance;
+    }
 
     public void Evolution(int friendliness)
     {
@@ -64,8 +70,15 @@ public class EvolutionManager : MonoBehaviour
         popUp.GetComponentInChildren<TextMeshProUGUI>().text = "たまポンが進化しました！";
 
         yield return new WaitForSeconds(3f);
-        popUp.SetActive(false);
-        UIs.SetActive(true);
+        if (ps.isEvolution2 == true)
+        {
+            popUp.GetComponentInChildren<TextMeshProUGUI>().text = "おめでとうございます！ゲームクリアです！";
+        }
+        else
+        {
+            popUp.SetActive(false);
+            UIs.SetActive(true);
+        }
 
     }
 

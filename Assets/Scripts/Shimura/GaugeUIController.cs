@@ -3,20 +3,24 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEditor;
 using System.Collections;
+using UnityEngine.TextCore.Text;
 
 public class GaugeUIController : MonoBehaviour
 {
     public Image friendlinessGauge;
     public Image manpukuGauge;
     public Image stressGauge;
-    public EvolutionManager evolutionManager;
+    public GameObject[] character;
+    
 
     float timer = 0;
+    public float duration = 0.5f; // アニメーション時間
 
     PlayerStatus ps;
     public HeartUIManager heart;
+    public EvolutionManager evolutionManager;
 
-    public float duration = 0.5f; // アニメーション時間
+    
 
     void Start()
     {
@@ -26,10 +30,12 @@ public class GaugeUIController : MonoBehaviour
         if (ps.prev_friendliness < 100)
         {
             friendlinessGauge.fillAmount = ps.prev_friendliness / 100f;
+            character[0].SetActive(true);
         }
         else if (ps.prev_friendliness < 200)
         {
             friendlinessGauge.fillAmount = (ps.prev_friendliness - 100) / 100f;
+            character[1].SetActive(true);
         }
 
         manpukuGauge.fillAmount = ps.prev_manpuku / 100f;
