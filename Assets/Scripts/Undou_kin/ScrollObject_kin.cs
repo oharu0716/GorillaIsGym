@@ -5,6 +5,7 @@ public class ScrollObject_kin : MonoBehaviour
     public float speed = 1.0f;
     public float startPosition;
     public float endPosition;
+    
     void Update()
     {
         //毎フレームxポジションを少しずつ移動させる

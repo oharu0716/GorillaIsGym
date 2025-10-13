@@ -72,12 +72,12 @@ public class GameController_kin : MonoBehaviour
 
         foreach (ScrollObject_kin so in scrollObjects) so.enabled = false;
         stateText.gameObject.SetActive(true);
-        stateText.text = "GameOver";
+        stateText.text = "Score:"+score;
     }
     void Reload()
     {
         string currentSceneName = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(currentSceneName);
+        SceneManager.LoadScene("Main");
     }
     public void IncreaseScore()
     {
