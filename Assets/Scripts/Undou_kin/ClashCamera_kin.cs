@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ClashCamera : MonoBehaviour
+public class ClashCamera_kin : MonoBehaviour
 {
     public void Clash()
     {
-        FlashEffect.Play();
+        FlashEffect_kin.Play();
         GetComponent<Animator>().SetTrigger("shake");
     }
 }

@@ -19,6 +19,8 @@ public class GameController_kin : MonoBehaviour
     public GameObject blocks;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI stateText;
+    public GameObject startButton;
+    public GameObject EndPanel;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -29,10 +31,10 @@ public class GameController_kin : MonoBehaviour
         switch (state)
         {
             case State.Ready:
-                if (Input.GetButtonDown("Fire1")) GameStart();
+                //if (Input.GetButtonDown("Fire1")) GameStart();
                 break;
             case State.Play:
-                if (chara.IsDead()) GameOver();
+                if (chara.IsClash()) GameOver();
                 break;
             case State.GameOver:
                 if (Input.GetButtonDown("Fire1")) Reload();
@@ -48,19 +50,28 @@ public class GameController_kin : MonoBehaviour
 
         scoreText.text = "Score:" + 0;
         stateText.gameObject.SetActive(true);
-        stateText.text = "Ready";
+        //stateText.text = "Ready";
+        if (EndPanel != null)
+        {
+            EndPanel.SetActive(false);
+        }
     }
-    void GameStart()
+    public void GameStart()
     {
         state = State.Play;
         chara.SetSteerActive(true);
         blocks.SetActive(true);
-       // chara.Flap();
+        // chara.Flap();
 
         stateText.gameObject.SetActive(false);
         stateText.text = "";
+        // 【追記】スタートボタンを非表示にする
+        if (startButton != null)
+        {
+            startButton.SetActive(false);
+        }
     }
-    void GameOver()
+    public void GameOver()
     {
         state = State.GameOver;
 
@@ -72,7 +83,11 @@ public class GameController_kin : MonoBehaviour
 
         foreach (ScrollObject_kin so in scrollObjects) so.enabled = false;
         stateText.gameObject.SetActive(true);
-        stateText.text = "Score:"+score;
+        stateText.text = "『"+score+"%』のストレス解消になりました！";
+        if (EndPanel != null)
+        {
+            EndPanel.SetActive(true);
+        }
     }
     void Reload()
     {
@@ -83,6 +98,6 @@ public class GameController_kin : MonoBehaviour
     {
         score++;
         Debug.Log(score);
-        scoreText.text = "Score:" + score;
+        scoreText.text =  "『"+score+"%』のストレス解消になりました！";
     }
 }

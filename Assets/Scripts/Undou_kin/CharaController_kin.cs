@@ -16,16 +16,16 @@ public class CharaController_kin : MonoBehaviour
     // 内部で使う変数
     private Rigidbody2D rb2d;
     private Animator animator;
-    private bool isDead;
+    private bool isClash;
 
     private JumpStatus playerStatus = JumpStatus.GROUND; // 現在のジャンプ状態
     private float jumpTimer = 0f;    // ジャンプしてからの経過時間
     private bool jumpKeyPressed = false; // ジャンプキーが押されているか
     private bool lockKeyInput = false; // 着地直後のキー入力受付をロックするフラグ
 
-    public bool IsDead()
+    public bool IsClash()
     {
-        return isDead;
+        return isClash;
     }
 
     void Awake()
@@ -40,7 +40,7 @@ public class CharaController_kin : MonoBehaviour
 
     void Update()
     {
-        if (isDead) return;
+        if (isClash) return;
 
         // キー入力の受付
         if (Input.GetButton("Fire1")) // スペースキーや左クリックなど
@@ -58,7 +58,7 @@ public class CharaController_kin : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isDead || rb2d.bodyType != RigidbodyType2D.Dynamic)
+        if (isClash || rb2d.bodyType != RigidbodyType2D.Dynamic)
         {
             // 物理演算が不要な状態なら何もしない
             if(rb2d.bodyType == RigidbodyType2D.Kinematic) rb2d.linearVelocity = Vector2.zero;
@@ -124,7 +124,7 @@ public class CharaController_kin : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (isDead) return;
+        if (isClash) return;
 
         // ぶつかった相手のタグが "underGrounds" だったら
         if (collision.gameObject.CompareTag("underGrounds"))
@@ -141,7 +141,7 @@ public class CharaController_kin : MonoBehaviour
         else // "underGrounds" 以外のオブジェクト（岩など）に衝突した場合
         {
             Camera.main.SendMessage("Clash");
-            isDead = true;
+            isClash = true;
         }
     }
 

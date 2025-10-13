@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-class FlashEffect : MonoBehaviour
+class FlashEffect_kin : MonoBehaviour
 {
     private Texture2D texture;
     private float alpha;
@@ -9,7 +9,7 @@ class FlashEffect : MonoBehaviour
     public static void Play()
     {
         GameObject go = new GameObject("Flash");
-        go.AddComponent<FlashEffect>();
+        go.AddComponent<FlashEffect_kin>();
     }
 
     void Awake()
