@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using TMPro;
 
 public class CharacterUIController : MonoBehaviour
 {
@@ -9,10 +10,24 @@ public class CharacterUIController : MonoBehaviour
     //第三形態[4]
     [SerializeField] private GameObject[] images;
     [SerializeField] private float duration = 1.5f;
+    [SerializeField] private GameObject popUp;
+    [SerializeField] private GameObject UIs;
+    [SerializeField] private GameObject restartButton;
+
 
 
     public void Blend(int i)
     {
+        foreach (var img in UIs.GetComponentsInChildren<Image>())
+        {
+            img.DOFade(0f, duration);
+        }
+        foreach (var txt in UIs.GetComponentsInChildren<TextMeshProUGUI>())
+        {
+            txt.DOFade(0f, duration);
+        }
+
+
         Debug.Log("Blend内");
         // 最初はAが完全に見えてて、Bは透明
         images[i + 1].SetActive(true);
@@ -22,6 +37,10 @@ public class CharacterUIController : MonoBehaviour
         .OnComplete(() =>
         {
             images[i].SetActive(false);
+            UIs.SetActive(false);
+            popUp.SetActive(true);
+            popUp.GetComponentInChildren<TextMeshProUGUI>().text = "たまポンは死んでしまった・・・・";
+            Invoke("Restart", 2f);
         }); ;
 
     }
@@ -39,5 +58,10 @@ public class CharacterUIController : MonoBehaviour
             images[i].SetActive(false);
         }); ;
 
+    }
+
+    public void Restart()
+    {
+        restartButton.SetActive(true);
     }
 }
