@@ -21,7 +21,7 @@ public class GaugeUIController : MonoBehaviour
     public Image friendlinessGauge;
     public Image manpukuGauge;
     public Image stressGauge;
-    
+
 
     float timer = 0;
     public float duration = 0.5f; // アニメーション時間
@@ -29,11 +29,12 @@ public class GaugeUIController : MonoBehaviour
     PlayerStatus ps;
     public HeartUIManager heart;
     public EvolutionManager evolutionManager;
-    
+
 
     void Start()
     {
         ps = PlayerStatus.instance;
+        ps.RefreshUI(); // ← ここで ui を再取得
 
         // 前の状態をそのまま表示（アニメーションなし）
         if (ps.prev_friendliness < 100)
@@ -71,13 +72,15 @@ public class GaugeUIController : MonoBehaviour
         {
             if (ps.friendliness >= 100 && ps.isEvolution1 == false)
             {
-                evolutionManager.Evolution(ps.friendliness);
+                ps.isEffect = true;
                 ps.isEvolution1 = true;
+                evolutionManager.Evolution();
             }
             else if (ps.friendliness >= 200 && ps.isEvolution2 == false)
             {
-                evolutionManager.Evolution(ps.friendliness);
+                ps.isEffect = true;
                 ps.isEvolution2 = true;
+                evolutionManager.Evolution();
             }
         }); ;
     }
@@ -89,11 +92,14 @@ public class GaugeUIController : MonoBehaviour
 
         if (timer >= 1f) // 1秒経過したら
         {
-            timer = 0f; // タイマーリセット
-            ps.DecreaseManpukuPerSec();
-            manpukuGauge.DOFillAmount(ps.manpuku / 100f, duration);
-            ps.IncreaseStressPerSec();
-            stressGauge.DOFillAmount(ps.stress / 100f, duration);
+            if (ps.isEffect == false)
+            {
+                timer = 0f; // タイマーリセット
+                ps.DecreaseManpukuPerSec();
+                manpukuGauge.DOFillAmount(ps.manpuku / 100f, duration);
+                ps.IncreaseStressPerSec();
+                stressGauge.DOFillAmount(ps.stress / 100f, duration);
+            }
         }
     }
 

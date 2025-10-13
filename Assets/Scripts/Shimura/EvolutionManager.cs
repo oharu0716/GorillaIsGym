@@ -20,13 +20,13 @@ public class EvolutionManager : MonoBehaviour
         ps = PlayerStatus.instance;
     }
 
-    public void Evolution(int friendliness)
+    public void Evolution()
     {
         UIs.SetActive(false);
-        StartCoroutine(WaitAndDoSomething(friendliness));
+        StartCoroutine(WaitAndDoSomething());
     }
 
-    public void PlayWhiteOut(int friendliness)
+    public void PlayWhiteOut()
     {
         float scaleDuration = 0.2f;
         float fadeDuration = 3f;
@@ -42,11 +42,11 @@ public class EvolutionManager : MonoBehaviour
         whiteImage.DOFade(1f, fadeDuration).SetEase(Ease.OutCubic).OnComplete(() =>
         {
             //キャラクターを差し替える
-            if (friendliness >= 100)
+            if (ps.isEvolution1 == true && ps.isEvolution2 == false)
             {
                 ui.BlendEvolution(0);
             }
-            else if (friendliness >= 200)
+            else if (ps.isEvolution2 == true)
             {
                 ui.BlendEvolution(2);
             }
@@ -57,14 +57,14 @@ public class EvolutionManager : MonoBehaviour
         });
     }
 
-    IEnumerator WaitAndDoSomething(int friendliness)
+    IEnumerator WaitAndDoSomething()
     {
         // 指定秒数待つ
         yield return new WaitForSeconds(2f);
         popUp.SetActive(true);
 
         yield return new WaitForSeconds(2f);
-        PlayWhiteOut(friendliness);
+        PlayWhiteOut();
 
         yield return new WaitForSeconds(6f);
         popUp.GetComponentInChildren<TextMeshProUGUI>().text = "たまポンが進化しました！";
@@ -78,6 +78,7 @@ public class EvolutionManager : MonoBehaviour
         {
             popUp.SetActive(false);
             UIs.SetActive(true);
+            ps.isEffect = false;
         }
 
     }

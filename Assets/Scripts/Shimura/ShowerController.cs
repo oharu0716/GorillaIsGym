@@ -11,6 +11,7 @@ public class ShowerController : MonoBehaviour
     void Start()
     {
         ps = PlayerStatus.instance;
+        ps.DecreaseShowerPoint();
 
         Invoke("ReturnToMainScene", 4f); //4秒たったら自動でMainシーンに戻る
 

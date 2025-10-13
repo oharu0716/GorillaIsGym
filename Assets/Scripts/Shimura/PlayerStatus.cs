@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class PlayerStatus : MonoBehaviour
 {
-    public HeartUIManager heartUIManager;
     public GaugeUIController ui;
 
 
@@ -20,6 +19,7 @@ public class PlayerStatus : MonoBehaviour
     bool isDeath = false;
     public bool isEvolution1;
     public bool isEvolution2;
+    public bool isEffect;
 
     //各ゲージのMAX
     const int max_friendliness = 300;
@@ -36,6 +36,7 @@ public class PlayerStatus : MonoBehaviour
     public int stressDecreaseAmount; //ご飯とお風呂でストレスを下げる値
     public int hpIncreaseAmount; //お風呂でHPを増やす値
     public int hpDecreaseAmount; //狩りと運動でHPを減らす値
+    public int showerPoint; //2pointたまったらお風呂にはいれる。シャワったら０になる
 
     // 前回の状態
     public int prev_friendliness;
@@ -73,11 +74,9 @@ public class PlayerStatus : MonoBehaviour
         food_list[4].Num++;
     }
 
-    void OnEnable()
+    public void RefreshUI()
     {
-        // シーンがロードされたタイミングで GaugeUIController を探す
-        if (ui == null)
-            ui = FindFirstObjectByType<GaugeUIController>();
+        ui = FindFirstObjectByType<GaugeUIController>();
     }
 
     //シーン遷移前の値を保持
@@ -280,5 +279,18 @@ public class PlayerStatus : MonoBehaviour
             }
         }
 
+    }
+
+    public void IncreaseShowerPoint()
+    {
+        if (showerPoint < 2)
+        {
+            showerPoint++;
+        }
+    }
+    
+    public void DecreaseShowerPoint()
+    {
+        showerPoint = 0;
     }
 }

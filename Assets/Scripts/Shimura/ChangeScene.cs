@@ -27,6 +27,7 @@ public class ChangeScene : MonoBehaviour
     {
         ps.SaveCurrentAsPrevious(); //前の値を記録
         ps.DecreaseHp();
+        ps.IncreaseShowerPoint();
         heart.UpdateLife(ps.hp);
         SceneManager.LoadScene("Hunting");
     }
@@ -35,12 +36,14 @@ public class ChangeScene : MonoBehaviour
     {
         ps.SaveCurrentAsPrevious();
         ps.DecreaseHp();
+        ps.IncreaseShowerPoint();
         heart.UpdateLife(ps.hp);
         SceneManager.LoadScene("Excercise");
     }
 
     public void GotoHatch()
     {
+        Destroy(PlayerStatus.instance.gameObject);
         SceneManager.LoadScene("Hatch");
     }
 }
