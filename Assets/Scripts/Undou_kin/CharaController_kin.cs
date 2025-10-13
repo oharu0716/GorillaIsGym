@@ -1,169 +1,152 @@
 using UnityEngine;
-using System.Collections;
 
 public class CharaController_kin : MonoBehaviour
 {
-    const int MinLane = -1;
-    const int MaxLane = 1;
-    const float LaneWidth = 0.2f;
-    const float StunDuration = 0.5f;
-    const float MoveDuration = 0.01f;
+    // プレイヤーのジャンプ状態を定義
+    private enum JumpStatus { GROUND, UP, DOWN }
 
-    CharacterController controller;
-    Animator animator;
+    [Header("ジャンプの設定（自前物理演算）")]
+    public float initialJumpSpeed = 25.0f; // ジャンプの初速
+    public float customGravity = 120.0f;   // 自前の重力の強さ
+    public float minJumpDuration = 0.05f;  // 最低でもジャンプする時間
 
-    Vector3 moveDirection = Vector3.zero;
-    float recoverTime = 0.0f;
-    private Coroutine moveCoroutine;
+    [Header("参照するオブジェクト")]
+    public GameObject sprite;
 
-    public float gravity;
-    public float speedZ;
-    public float speedJump;
-    public float accelerationZ;
+    // 内部で使う変数
+    private Rigidbody2D rb2d;
+    private Animator animator;
+    private bool isClash;
 
+    private JumpStatus playerStatus = JumpStatus.GROUND; // 現在のジャンプ状態
+    private float jumpTimer = 0f;    // ジャンプしてからの経過時間
+    private bool jumpKeyPressed = false; // ジャンプキーが押されているか
+    private bool lockKeyInput = false; // 着地直後のキー入力受付をロックするフラグ
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-
-    bool IsStun()
+    public bool IsClash()
     {
-        return recoverTime > 0.0f;
+        return isClash;
     }
 
-    void Start()
+    void Awake()
     {
-        controller = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
+        rb2d = GetComponent<Rigidbody2D>();
+        animator = sprite.GetComponent<Animator>();
 
+        // ★★★ 最重要 ★★★
+        // 自前で重力計算をするため、Unityの重力を無効化します
+        rb2d.gravityScale = 0;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // 左キーを「押した瞬間」
-        if (Input.GetKeyDown("left"))
-        {
-            MoveToLane(MinLane); // 左のレーン(-1)へ移動開始
-        }
-        // 右キーを「押した瞬間」
-        else if (Input.GetKeyDown("right"))
-        {
-            MoveToLane(MaxLane); // 右のレーン(1)へ移動開始
-        }
+        if (isClash) return;
 
-        // 左キーか右キーを「離した瞬間」
-        if (Input.GetKeyUp("left") || Input.GetKeyUp("right"))
+        // キー入力の受付
+        if (Input.GetButton("Fire1")) // スペースキーや左クリックなど
         {
-            MoveToLane(0); // 真ん中のレーン(0)へ移動開始
-        }
-
-        // スペースキーを「押した瞬間」
-        if (Input.GetKeyDown("space"))
-        {
-            Jump();
-        }
-        // ----- ★キー入力の変更はここまで -----
-
-
-        if (IsStun())
-        {
-            //動きを止め気絶状態からの復帰カウントを進める。
-            moveDirection.x = 0.0f;
-            moveDirection.z = 0.0f;
-            recoverTime -= Time.deltaTime;
+            // キーロック中でなければ、キーが押されていると判断
+            jumpKeyPressed = !lockKeyInput;
         }
         else
         {
-            // 前に進む力の計算
-            float acceleratedZ = moveDirection.z + (accelerationZ * Time.deltaTime);
-            moveDirection.z = Mathf.Clamp(acceleratedZ, 0, speedZ);
-
-            // 横移動はコルーチンが担当。moveDirection.x は基本的に0らしい
-            moveDirection.x = 0;
+            // キーが離されたら、押されていない状態にし、キーロックも解除
+            jumpKeyPressed = false;
+            lockKeyInput = false;
         }
-        //重力分の力を毎フレーム追加
-        moveDirection.y -= gravity * Time.deltaTime;
-        //移動実行
-        Vector3 globalDirection = transform.TransformDirection(moveDirection);
-        controller.Move(globalDirection * Time.deltaTime);
-        //移動後接地してたらY方向の速度はリセットする
-        if (controller.isGrounded) moveDirection.y = 0;
-        //速度が０以上なら走っているフラグをtrueにする
-        animator.SetBool("run", moveDirection.z > 0.0f);
     }
 
-    // ★レーン移動を開始させる命令
-    public void MoveToLane(int targetLane)
+    void FixedUpdate()
     {
-        if (IsStun()) return;
-
-        // もしすでに移動中だったら、古い動きは止める
-        if (moveCoroutine != null)
+        if (isClash || rb2d.bodyType != RigidbodyType2D.Dynamic)
         {
-            StopCoroutine(moveCoroutine);
+            // 物理演算が不要な状態なら何もしない
+            if(rb2d.bodyType == RigidbodyType2D.Kinematic) rb2d.linearVelocity = Vector2.zero;
+            return;
         }
 
-        // 新しい移動のコルーチンを開始する！
-        moveCoroutine = StartCoroutine(MoveLaneCoroutine(targetLane));
+        // 現在の速度をベースに、Y軸方向の速度を計算していく
+        Vector2 newVelocity = rb2d.linearVelocity;
+        newVelocity.x = 0; // このキャラクターは横移動しない
+
+        // 状態に応じて処理を切り替え
+        switch (playerStatus)
+        {
+            // 【状態：GROUND】地面にいるとき
+            case JumpStatus.GROUND:
+                if (jumpKeyPressed)
+                {
+                    // ジャンプキーが押されたら、状態を「上昇」へ
+                    playerStatus = JumpStatus.UP;
+                    jumpTimer = 0f; // タイマーリセット
+                }
+                else
+                {
+                    newVelocity.y = 0; // 地面にいるときはピッタリ止まる
+                }
+                break;
+
+            // 【状態：UP】ジャンプして上昇しているとき
+            case JumpStatus.UP:
+                jumpTimer += Time.fixedDeltaTime;
+
+                // キーを押し続けているか、最低ジャンプ時間に達していない間は上昇
+                if (jumpKeyPressed || jumpTimer < minJumpDuration)
+                {
+                    // 速度 = 初速 - (重力 * 時間^2)
+                    newVelocity.y = initialJumpSpeed - (customGravity * Mathf.Pow(jumpTimer, 2));
+                }
+                else
+                {
+                    // キーを離したら、即座に上昇を打ち切る
+                    newVelocity.y = 0;
+                }
+
+                // Y速度がマイナスに転じたら、状態を「落下」へ
+                if (newVelocity.y <= 0)
+                {
+                    playerStatus = JumpStatus.DOWN;
+                    jumpTimer = 0f; // 落下用にタイマーリセット
+                }
+                break;
+
+            // 【状態：DOWN】落下しているとき
+            case JumpStatus.DOWN:
+                jumpTimer += Time.fixedDeltaTime;
+                // 速度 = -(重力 * 時間^2) でどんどん加速して落ちる
+                newVelocity.y = -(customGravity * Mathf.Pow(jumpTimer, 2));
+                break;
+        }
+
+        // 計算した速度をRigidbodyに適用
+        rb2d.linearVelocity = newVelocity;
     }
 
-    // ★ピッタリ0.1秒で移動するためのコルーチンの本体！
-    IEnumerator MoveLaneCoroutine(int targetLane)
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        float startPositionX = transform.position.x; // 今いる場所
-        float endPositionX = targetLane * LaneWidth;  // 行きたい場所
-        float elapsedTime = 0f; // 経過時間タイマー
+        if (isClash) return;
 
-        // 経過時間が MoveDuration(0.1秒) になるまで、この中を繰り返す
-        while (elapsedTime < MoveDuration)
+        // ぶつかった相手のタグが "underGrounds" だったら
+        if (collision.gameObject.CompareTag("underGrounds"))
         {
-            // 経過時間を更新
-            elapsedTime += Time.deltaTime;
-            // 進捗度を計算 (0.0 ～ 1.0 の値になる)
-            float progress = elapsedTime / MoveDuration;
-
-            // Lerp（ラープ）という魔法で、スタートとゴールの間の今の位置を計算する
-            float newX = Mathf.Lerp(startPositionX, endPositionX, progress);
-
-            // 計算した位置まで、キャラクターを動かすための「移動量」を計算
-            Vector3 move = new Vector3(newX - transform.position.x, 0, 0);
-
-            // キャラクターを実際に動かす！
-            controller.Move(move);
-
-            // ここで一旦休憩して、次のフレームまで待つ
-            yield return null;
+            // 落下中に地面に接触した場合のみ、「接地」状態に戻す
+            // これにより、天井や壁に頭をぶつけても接地状態になるのを防ぐ
+            if (playerStatus == JumpStatus.DOWN)
+            {
+                playerStatus = JumpStatus.GROUND;
+                jumpTimer = 0f;
+                lockKeyInput = true; // 着地した瞬間はキー入力をロックし、暴発を防ぐ
+            }
         }
-
-        // ループが終わったら、誤差をなくすためにピッタリの位置に合わせる
-        Vector3 finalMove = new Vector3(endPositionX - transform.position.x, 0, 0);
-        controller.Move(finalMove);
-
-        // 移動が終わったので、覚えていたコルーチンを空にする
-        moveCoroutine = null;
+        else // "underGrounds" 以外のオブジェクト（岩など）に衝突した場合
+        {
+            Camera.main.SendMessage("Clash");
+            isClash = true;
+        }
     }
-    public void Jump()
-    {
-        if (IsStun()) return;
-        if (controller.isGrounded)
-        {
-            //ジャンプトリガーを設定
-            moveDirection.y = speedJump;
-            animator.SetTrigger("jump");
-        }
 
-    }
-    //CharavterControllerに衝突判定が生じた時の処理
-    void OnControllerColliderHit(ControllerColliderHit hit)
+    public void SetSteerActive(bool active)
     {
-        if (IsStun()) return;
-        if (hit.gameObject.CompareTag("Robo"))
-        {
-            recoverTime = StunDuration;
-            //ダメージトリガーを設定
-            animator.SetTrigger("damage");
-            //ヒットしたオブジェクトは消去
-            Destroy(hit.gameObject);
-        }
-
+        rb2d.bodyType = active ? RigidbodyType2D.Dynamic : RigidbodyType2D.Kinematic;
     }
 }
