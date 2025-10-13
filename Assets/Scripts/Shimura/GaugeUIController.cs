@@ -4,13 +4,23 @@ using DG.Tweening;
 using UnityEditor;
 using System.Collections;
 using UnityEngine.TextCore.Text;
+using TMPro;
 
 public class GaugeUIController : MonoBehaviour
 {
+    //第一形態[0]、死亡[1]
+    //第二形態[2]、死亡[3]
+    //第三形態[4]
+    [SerializeField] private GameObject[] images;
+    [SerializeField] private float blend_duration = 1.5f;
+    [SerializeField] private GameObject popUp;
+    [SerializeField] private GameObject UIs;
+    [SerializeField] private GameObject restartButton;
+
+    //三つのゲージ
     public Image friendlinessGauge;
     public Image manpukuGauge;
     public Image stressGauge;
-    public GameObject[] character;
     
 
     float timer = 0;
@@ -19,7 +29,6 @@ public class GaugeUIController : MonoBehaviour
     PlayerStatus ps;
     public HeartUIManager heart;
     public EvolutionManager evolutionManager;
-
     
 
     void Start()
@@ -30,12 +39,12 @@ public class GaugeUIController : MonoBehaviour
         if (ps.prev_friendliness < 100)
         {
             friendlinessGauge.fillAmount = ps.prev_friendliness / 100f;
-            character[0].SetActive(true);
+            images[0].SetActive(true);
         }
         else if (ps.prev_friendliness < 200)
         {
             friendlinessGauge.fillAmount = (ps.prev_friendliness - 100) / 100f;
-            character[1].SetActive(true);
+            images[2].SetActive(true);
         }
 
         manpukuGauge.fillAmount = ps.prev_manpuku / 100f;
@@ -86,5 +95,54 @@ public class GaugeUIController : MonoBehaviour
             ps.IncreaseStressPerSec();
             stressGauge.DOFillAmount(ps.stress / 100f, duration);
         }
+    }
+
+    public void Blend(int i)
+    {
+        foreach (var img in UIs.GetComponentsInChildren<Image>())
+        {
+            img.DOFade(0f, blend_duration);
+        }
+        foreach (var txt in UIs.GetComponentsInChildren<TextMeshProUGUI>())
+        {
+            txt.DOFade(0f, blend_duration);
+        }
+
+
+        Debug.Log("Blend内");
+        // 最初はAが完全に見えてて、Bは透明
+        images[i + 1].SetActive(true);
+        // 同時にフェード（Aを下げつつBを上げる）
+        images[i].GetComponent<Image>().DOFade(0f, blend_duration);
+        images[i + 1].GetComponent<Image>().DOFade(1f, blend_duration)
+        .OnComplete(() =>
+        {
+            images[i].SetActive(false);
+            UIs.SetActive(false);
+            popUp.SetActive(true);
+            popUp.GetComponentInChildren<TextMeshProUGUI>().text = "たまポンは死んでしまった・・・・";
+            Invoke("Restart", 2f);
+        }); ;
+
+    }
+
+    public void BlendEvolution(int i)
+    {
+        Debug.Log("BlendEvo内");
+        // 最初はAが完全に見えてて、Bは透明
+        images[i + 2].SetActive(true);
+        // 同時にフェード（Aを下げつつBを上げる）
+        images[i].GetComponent<Image>().DOFade(0f, blend_duration);
+        images[i + 2].GetComponent<Image>().DOFade(1f, blend_duration)
+        .OnComplete(() =>
+        {
+            images[i].SetActive(false);
+        }); ;
+
+    }
+
+    public void Restart()
+    {
+        restartButton.SetActive(true);
     }
 }

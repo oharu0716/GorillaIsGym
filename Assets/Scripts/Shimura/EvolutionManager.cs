@@ -11,7 +11,7 @@ public class EvolutionManager : MonoBehaviour
     [SerializeField] private Image whiteImage; // Canvas全体に置いた白Image
     [SerializeField] private GameObject UIs;
     [SerializeField] private GameObject popUp;
-    public CharacterUIController characterUIController;
+    public GaugeUIController ui;
     public ChangeScene scene;
     PlayerStatus ps;
 
@@ -44,11 +44,11 @@ public class EvolutionManager : MonoBehaviour
             //キャラクターを差し替える
             if (friendliness >= 100)
             {
-                characterUIController.BlendEvolution(0);
+                ui.BlendEvolution(0);
             }
             else if (friendliness >= 200)
             {
-                characterUIController.BlendEvolution(2);
+                ui.BlendEvolution(2);
             }
 
             // 3. ゆっくり透明に戻す
