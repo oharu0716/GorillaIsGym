@@ -12,6 +12,8 @@ public class CharacterUIController : MonoBehaviour
     [SerializeField] private float duration = 1.5f;
     [SerializeField] private GameObject popUp;
     [SerializeField] private GameObject UIs;
+    [SerializeField] private GameObject restartButton;
+
 
 
     public void Blend(int i)
@@ -38,6 +40,7 @@ public class CharacterUIController : MonoBehaviour
             UIs.SetActive(false);
             popUp.SetActive(true);
             popUp.GetComponentInChildren<TextMeshProUGUI>().text = "たまポンは死んでしまった・・・・";
+            Invoke("Restart", 2f);
         }); ;
 
     }
@@ -55,5 +58,10 @@ public class CharacterUIController : MonoBehaviour
             images[i].SetActive(false);
         }); ;
 
+    }
+
+    public void Restart()
+    {
+        restartButton.SetActive(true);
     }
 }
