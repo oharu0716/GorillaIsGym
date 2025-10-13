@@ -21,9 +21,13 @@ public class GameController_kin : MonoBehaviour
     public TextMeshProUGUI stateText;
     public GameObject startButton;
     public GameObject EndPanel;
+
+    //志村が書き足します
+    public PlayerStatus ps;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        ps = PlayerStatus.instance;
         Ready();
     }
     void LateUpdate()
@@ -91,7 +95,10 @@ public class GameController_kin : MonoBehaviour
     }
     void Reload()
     {
-        string currentSceneName = SceneManager.GetActiveScene().name;
+        //志村が書き足しました。ステータス値変更処理
+        ps.DecreaseStress(score, 1);
+        ps.DecreaseManpuku();
+
         SceneManager.LoadScene("Main");
     }
     public void IncreaseScore()

@@ -135,11 +135,11 @@ public class PlayerStatus : MonoBehaviour
         Debug.Log($"満腹度UP!現在の満腹度 {manpuku}" + "増えた値" + amount);
     }
 
-    public void DecreaseManpuku(int amount)
+    public void DecreaseManpuku()
     {
         //狩りと運動で固定値減少
-        manpuku = Mathf.Max(0, manpuku - amount);
-        Debug.Log($"満腹度Down!現在の満腹度 {manpuku}" + "減った値" + amount);
+        manpuku = Mathf.Max(0, manpuku - manpukuDecreaseAmount);
+        Debug.Log($"満腹度Down!現在の満腹度 {manpuku}" + "減った値" + manpukuDecreaseAmount);
 
         //死亡処理
         if (manpuku == 0 && isDeath == false)
