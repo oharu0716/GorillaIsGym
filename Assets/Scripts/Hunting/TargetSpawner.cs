@@ -1,4 +1,5 @@
 
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.LightTransport;
 
@@ -8,14 +9,29 @@ public class TargetSpawner : MonoBehaviour
     public float spawnInterval = 2f; //出現間隔
     public Vector3 spawnArea = new Vector3(8f, 2f, 8f); //出現範囲
 
-    void Start()
+    private bool isSpawning = false;
+
+    public void StartSpawning()
     {
-        // 1秒後から「SpawnTarget」を呼び出し、以後spawnIntervalごとに繰り返す
-        InvokeRepeating(nameof(SpawnTarget), 1f, spawnInterval);
+        if (!isSpawning)
+        {
+            isSpawning = true;
+            // 1秒後から「SpawnTarget」を呼び出し、以後spawnIntervalごとに繰り返す
+            InvokeRepeating(nameof(SpawnTarget), 1f, spawnInterval);
+        }
+
+    }
+    public void StopSpawning()
+    {
+        isSpawning = false;
+        CancelInvoke(nameof(SpawnTarget));
     }
 
     void SpawnTarget()
     {
+        if (!isSpawning) return;
+
+        if (targetPrefabs.Length == 0) return;
         //Random.Range(a, b) a〜b の範囲でランダムな値を返す関数。
         Vector3 randomPos = new Vector3(
             //X … -spawnArea.x から spawnArea.x
