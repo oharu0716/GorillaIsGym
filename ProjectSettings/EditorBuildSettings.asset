@@ -6,11 +6,20 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Hatch.unity
+    guid: 4dfcea9067a366942a62aa2b8161ab5b
+  - enabled: 1
     path: Assets/Scenes/Main.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
     path: Assets/Scenes/Feed.unity
     guid: bcb0011bc211f514eb5d8e0e1628d2ab
+  - enabled: 1
+    path: Assets/Scenes/Excercise.unity
+    guid: 9140aacbfbf5d4916a1c90003209bf5d
+  - enabled: 1
+    path: Assets/Scenes/Hunting.unity
+    guid: 8011bb74e1f8cc048a368323e3051cc7
   - enabled: 1
     path: Assets/Scenes/Shower.unity
     guid: 365f7055d4fa9ee42a0d3ca15bda5f6d
