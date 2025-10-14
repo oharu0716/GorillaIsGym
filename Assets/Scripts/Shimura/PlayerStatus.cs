@@ -67,8 +67,8 @@ public class PlayerStatus : MonoBehaviour
         food_list.Add(new FamiChick());
 
         //テスト用に一個ずつ食べ物追加
-        food_list[0].Num++;
-        food_list[1].Num++;
+        food_list[0].Num += 5;
+        food_list[1].Num += 3;
         food_list[2].Num++;
         food_list[3].Num++;
         food_list[4].Num++;

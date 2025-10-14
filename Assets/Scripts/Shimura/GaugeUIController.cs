@@ -5,6 +5,7 @@ using UnityEditor;
 using System.Collections;
 using UnityEngine.TextCore.Text;
 using TMPro;
+using UnityEngine.Rendering;
 
 public class GaugeUIController : MonoBehaviour
 {
@@ -29,10 +30,14 @@ public class GaugeUIController : MonoBehaviour
     PlayerStatus ps;
     public HeartUIManager heart;
     public EvolutionManager evolutionManager;
+    AudioManager am;
+
+    public AudioClip gaugeSound;
 
 
     void Start()
     {
+        am = AudioManager.Instance; 
         ps = PlayerStatus.instance;
         ps.RefreshUI(); // ← ここで ui を再取得
 
@@ -57,6 +62,7 @@ public class GaugeUIController : MonoBehaviour
 
     void UpdateAllGauges()
     {
+        am.PlaySE(gaugeSound);
         heart.UpdateLife(ps.hp);
         if (ps.prev_friendliness < 100)
         {

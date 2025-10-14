@@ -14,9 +14,16 @@ public class EvolutionManager : MonoBehaviour
     public GaugeUIController ui;
     public ChangeScene scene;
     PlayerStatus ps;
+    AudioManager am;
+
+    //効果音
+    public AudioClip kirakira;
+    public AudioClip sinka;
+    public AudioClip clear;
 
     void Start()
     {
+        am = AudioManager.Instance;
         ps = PlayerStatus.instance;
     }
 
@@ -65,14 +72,17 @@ public class EvolutionManager : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
         PlayWhiteOut();
+        am.PlaySE(kirakira);
 
         yield return new WaitForSeconds(6f);
         popUp.GetComponentInChildren<TextMeshProUGUI>().text = "たまポンが進化しました！";
+        am.PlaySE(sinka);
 
         yield return new WaitForSeconds(3f);
         if (ps.isEvolution2 == true)
         {
             popUp.GetComponentInChildren<TextMeshProUGUI>().text = "おめでとうございます！ゲームクリアです！";
+            am.PlaySE(clear);
         }
         else
         {

@@ -16,9 +16,17 @@ public class EggClicker : MonoBehaviour
 
     public ChangeScene scene;
     public HatchManager hatch;
+    public AudioManager am;
+
+    //効果音
+    public AudioClip eggSound;
+    public AudioClip hatchSound;
 
     void Start()
     {
+        //AudioManager取得
+        am = AudioManager.Instance;
+
         // Animator取得
         animator = eggObject.GetComponent<Animator>();
 
@@ -35,6 +43,9 @@ public class EggClicker : MonoBehaviour
     {
         // AnimatorにTriggerを送る（Shakeなど）
         animator.SetTrigger("Shake");
+
+        //効果音再生
+        am.PlaySE(eggSound);
 
         //HatchManagerのSetUIStateでポップアップを消してもらう
         hatch.SetUIState(HatchManager.UIState.Hatch);
@@ -57,8 +68,12 @@ public class EggClicker : MonoBehaviour
         Debug.Log("キャラ出現");
         characterObject.SetActive(true);
 
+        //生誕サウンド再生
+        yield return new WaitForSeconds(2f);
+        am.PlaySE(hatchSound,2f);
+
         //HatchManagerのSetUIStateでポップアップを消してもらう
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f);
         hatch.SetUIState(HatchManager.UIState.PopUp);
 
     }

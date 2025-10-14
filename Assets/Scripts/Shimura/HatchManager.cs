@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +18,7 @@ public class HatchManager : MonoBehaviour
 
     private UIState currentState;
     public Button startButton;
+    public AudioManager am;
 
     // 画面ごとのUIオブジェクト（Inspectorからセット）
     public GameObject[] startUI;
@@ -25,8 +27,11 @@ public class HatchManager : MonoBehaviour
     public GameObject[] popUpUI;
     public GameObject explainUI;
 
+
     void Start()
     {
+        am = AudioManager.Instance;
+        am.PlayBGM(am.mainBGM);
         // ボタンのonClickにイベントを登録
         //startButton.onClick.AddListener(() => SetStateThisEgg());
         SetUIState(UIState.Start);

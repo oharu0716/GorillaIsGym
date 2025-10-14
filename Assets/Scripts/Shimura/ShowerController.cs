@@ -6,12 +6,19 @@ public class ShowerController : MonoBehaviour
 {
     public static bool TookShower = false;
     PlayerStatus ps;
+    AudioManager am;
+
+    public AudioClip showerSound;
+    public AudioClip bubbleSound;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        am = AudioManager.Instance;
         ps = PlayerStatus.instance;
         ps.DecreaseShowerPoint();
+        am.PlaySE(showerSound);
+        am.PlaySE(bubbleSound);
 
         Invoke("ReturnToMainScene", 4f); //4秒たったら自動でMainシーンに戻る
 
@@ -25,6 +32,7 @@ public class ShowerController : MonoBehaviour
         ps.IncreaseFriendliness(0, 0);
         ps.DecreaseStress(0,0);
         ps.IncreaseHp(0, 0);
+        am.StopSE();
         SceneManager.LoadScene("Main"); // Mainシーンに戻る
     }
 

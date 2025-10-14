@@ -12,11 +12,18 @@ public class FoodListManager : MonoBehaviour
     public PlayerStatus playerStatus;
     public const int down_stress_amount = 10;
 
+    //効果音
+    public AudioClip eatSound;
+    public AudioClip nomikomi;
+
+    AudioManager am;
+
     private List<Food> foodList;
     List<GameObject> buttons = new List<GameObject>();
 
     void Start()
     {
+        am = AudioManager.Instance;
         foodList = PlayerStatus.instance.food_list;
 
         ShowFood();
@@ -33,7 +40,7 @@ public class FoodListManager : MonoBehaviour
             if (gohan.Num != 0)
             {
                 GameObject buttonObj = Instantiate(buttonPrefab, buttonParent);
-                buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = gohan.Name;
+                buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = gohan.Name + " " + gohan.Num + "個";
 
                 // ボタンにクリックイベントを追加（ラムダ式）
                 buttonObj.GetComponent<Button>().onClick.AddListener(() => OnFoodSelected(gohan));
@@ -45,6 +52,9 @@ public class FoodListManager : MonoBehaviour
 
     void OnFoodSelected(Food gohan)
     {
+        am.ButtonClick();
+        am.PlaySE(eatSound,3f);
+        Invoke(nameof(StopSE), 1.5f);
         Debug.Log(gohan.Name);
         PlayerStatus.instance.IncreaseFriendliness(gohan.Friend, 1);
         PlayerStatus.instance.IncreaseManpuku(gohan.Manpuku);
@@ -52,6 +62,12 @@ public class FoodListManager : MonoBehaviour
         PlayerStatus.instance.DecreaseStress(down_stress_amount, 1);
         gohan.Num -= 1;
         ShowFood();
+    }
+
+    void StopSE()
+    {
+        am.StopSE();
+        am.PlaySE(nomikomi,5f);
     }
 }
 
