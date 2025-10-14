@@ -60,7 +60,8 @@ public class GaugeUIController : MonoBehaviour
         heart.UpdateLife(ps.hp);
         if (ps.prev_friendliness < 100)
         {
-            friendlinessGauge.fillAmount = ps.prev_friendliness / 100f;
+            Debug.Log("友情アニメーション");
+            friendlinessGauge.DOFillAmount(ps.friendliness / 100f, duration);
         }
         else if (ps.prev_friendliness < 200)
         {
