@@ -26,6 +26,7 @@ public class ChangeScene : MonoBehaviour
 
     public void GotoMain()
     {
+        am.StopSE();
         SceneManager.LoadScene("Main");
     }
 

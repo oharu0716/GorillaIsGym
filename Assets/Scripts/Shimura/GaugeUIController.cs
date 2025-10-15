@@ -32,8 +32,9 @@ public class GaugeUIController : MonoBehaviour
     public EvolutionManager evolutionManager;
     AudioManager am;
 
+    //効果音
     public AudioClip gaugeSound;
-
+    public AudioClip death;
 
     void Start()
     {
@@ -133,6 +134,8 @@ public class GaugeUIController : MonoBehaviour
             images[i].SetActive(false);
             UIs.SetActive(false);
             popUp.SetActive(true);
+            am.StopBGM();
+            am.PlaySE(death);
             popUp.GetComponentInChildren<TextMeshProUGUI>().text = "たまポンは死んでしまった・・・・";
             Invoke("Restart", 2f);
         }); ;

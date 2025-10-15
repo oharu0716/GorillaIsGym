@@ -92,17 +92,26 @@ public class PlayerStatus : MonoBehaviour
     public void AddFood(int score, bool Fami)
     {
         //スコアはまだ仮
-        if (score < 100)
+        if (score <= 30000)
         {
+            food_list[0].Num++;
+            food_list[1].Num++;
+            food_list[2].Num++;
+        }
+        else if (score <= 60000)
+        {
+            food_list[0].Num += 2;
+            food_list[1].Num++;
+            food_list[2].Num++;
+            food_list[3].Num++;
 
         }
-        else if (score < 200)
+        else
         {
-
-        }
-        else if (score < 300)
-        {
-
+            food_list[0].Num++;
+            food_list[1].Num++;
+            food_list[2].Num += 2;
+            food_list[3].Num += 2;
         }
 
         if (Fami)

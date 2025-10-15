@@ -1098,7 +1098,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6080027969993003509, guid: 10cd04cadd6ac374a9af2f52260462e7, type: 3}
       propertyPath: manpukuDecreasePerSec
-      value: 2
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6080027969993003509, guid: 10cd04cadd6ac374a9af2f52260462e7, type: 3}
       propertyPath: friendlinessIncreaseAmount
@@ -2415,6 +2415,10 @@ PrefabInstance:
       propertyPath: UIs
       value: 
       objectReference: {fileID: 1254376389}
+    - target: {fileID: 6642563682664403434, guid: 5b16aa7c7ec4a134186c1996eae6f4e8, type: 3}
+      propertyPath: death
+      value: 
+      objectReference: {fileID: 8300000, guid: cf34fd4b2825c3f43aa8b2d36ed67410, type: 3}
     - target: {fileID: 6642563682664403434, guid: 5b16aa7c7ec4a134186c1996eae6f4e8, type: 3}
       propertyPath: heart
       value: 

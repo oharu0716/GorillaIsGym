@@ -30,6 +30,7 @@ public class EvolutionManager : MonoBehaviour
     public void Evolution()
     {
         UIs.SetActive(false);
+        am.PlayBGM(am.evolutionBGM);
         StartCoroutine(WaitAndDoSomething());
     }
 
@@ -86,6 +87,7 @@ public class EvolutionManager : MonoBehaviour
         }
         else
         {
+            am.PlayBGM(am.mainBGM);
             popUp.SetActive(false);
             UIs.SetActive(true);
             ps.isEffect = false;

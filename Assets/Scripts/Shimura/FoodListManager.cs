@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
+using System.Runtime.CompilerServices;
+using System.Collections;
 
 public class FoodListManager : MonoBehaviour
 {
@@ -15,6 +17,9 @@ public class FoodListManager : MonoBehaviour
     //効果音
     public AudioClip eatSound;
     public AudioClip nomikomi;
+
+    //食べ物の絵
+    public GameObject[] foodSprites;
 
     AudioManager am;
 
@@ -52,22 +57,46 @@ public class FoodListManager : MonoBehaviour
 
     void OnFoodSelected(Food gohan)
     {
-        am.ButtonClick();
-        am.PlaySE(eatSound,3f);
-        Invoke(nameof(StopSE), 1.5f);
+        StartCoroutine(ShowFoodAnimation(gohan)); //ご飯を食べるアニメーションのコルーチン発動
+        am.ButtonClick(); //ボタンクリック音を鳴らす
+        am.StopSE(); //音が重ならないように今なっている効果音を止める
+        am.PlaySE(eatSound, 3f); //そしゃく音
+        Invoke(nameof(StopSE), 1.5f); //eatSoundが長すぎるので止めて、飲み込みを流す。
         Debug.Log(gohan.Name);
+        //フィールド値更新
         PlayerStatus.instance.IncreaseFriendliness(gohan.Friend, 1);
         PlayerStatus.instance.IncreaseManpuku(gohan.Manpuku);
         PlayerStatus.instance.IncreaseHp(gohan.Hp, 1);
         PlayerStatus.instance.DecreaseStress(down_stress_amount, 1);
+        //ご飯を一つ減らす
         gohan.Num -= 1;
+        //ボタン表示しなおし
         ShowFood();
     }
 
     void StopSE()
     {
         am.StopSE();
-        am.PlaySE(nomikomi,5f);
+        am.PlaySE(nomikomi, 5f);
+    }
+
+    IEnumerator ShowFoodAnimation(Food gohan)
+    {
+        GameObject selectFood = gohan.Name switch
+        {
+            "リンゴ" => foodSprites[0],
+            "おさかな" => foodSprites[1],
+            "チーズ" => foodSprites[2],
+            "ほねつき肉" => foodSprites[3],
+            "ファミチキ" => foodSprites[4],
+            _ => foodSprites[0]
+        };
+
+       
+        selectFood.SetActive(true);
+
+        yield return new WaitForSeconds(2.0f);
+        selectFood.SetActive(false);
     }
 }
 

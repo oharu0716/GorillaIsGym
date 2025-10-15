@@ -6,6 +6,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance { get; private set; }
 
     public AudioClip mainBGM;
+    public AudioClip evolutionBGM;
     public AudioClip buttonclick;
 
     [Header("BGM")]
