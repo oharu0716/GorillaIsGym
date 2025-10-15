@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &524594381691219881
+--- !u!1001 &6551099310693674046
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 16d059726601bcc4195e5628c81d2a94, type: 3}
       propertyPath: m_LocalScale.x
-      value: 2.16
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 16d059726601bcc4195e5628c81d2a94, type: 3}
       propertyPath: m_LocalScale.y
-      value: 2.16
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 16d059726601bcc4195e5628c81d2a94, type: 3}
       propertyPath: m_LocalScale.z
-      value: 2.16
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 16d059726601bcc4195e5628c81d2a94, type: 3}
       propertyPath: m_LocalPosition.x
@@ -78,23 +78,23 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 16d059726601bcc4195e5628c81d2a94, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6470989873164837182}
+      addedObject: {fileID: 6722358331780990014}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 16d059726601bcc4195e5628c81d2a94, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7512196832440705043}
+      addedObject: {fileID: 4872726419095476470}
   m_SourcePrefab: {fileID: 100100000, guid: 16d059726601bcc4195e5628c81d2a94, type: 3}
---- !u!1 &830582209463440120 stripped
+--- !u!1 &6209135456018157935 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 16d059726601bcc4195e5628c81d2a94, type: 3}
-  m_PrefabInstance: {fileID: 524594381691219881}
+  m_PrefabInstance: {fileID: 6551099310693674046}
   m_PrefabAsset: {fileID: 0}
---- !u!135 &6470989873164837182
+--- !u!135 &6722358331780990014
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 830582209463440120}
+  m_GameObject: {fileID: 6209135456018157935}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -107,15 +107,15 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.3
-  m_Center: {x: 0, y: 0.28, z: 0.03}
---- !u!114 &7512196832440705043
+  m_Radius: 0.28
+  m_Center: {x: 0, y: 0.28, z: 0}
+--- !u!114 &4872726419095476470
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 830582209463440120}
+  m_GameObject: {fileID: 6209135456018157935}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: af9c22e7c3cf20a4ea5d9ae7e79b6379, type: 3}
