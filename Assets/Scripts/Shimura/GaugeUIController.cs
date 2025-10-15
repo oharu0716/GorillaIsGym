@@ -61,7 +61,7 @@ public class GaugeUIController : MonoBehaviour
         DOVirtual.DelayedCall(1.7f, () => UpdateAllGauges());
     }
 
-    void UpdateAllGauges()
+    public void UpdateAllGauges()
     {
         am.PlaySE(gaugeSound);
         heart.UpdateLife(ps.hp);

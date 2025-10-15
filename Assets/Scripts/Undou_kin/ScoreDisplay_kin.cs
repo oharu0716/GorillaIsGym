@@ -12,7 +12,7 @@ public class ScoreDisplay_kin : MonoBehaviour
     void Start()
     {
         // シーン内のGameController_kinインスタンスを探して取得する
-        gameController = FindObjectOfType<GameController_kin>();
+        ScoreDisplay_kin score = Object.FindFirstObjectByType<ScoreDisplay_kin>();
 
         if (scoreText == null)
         {

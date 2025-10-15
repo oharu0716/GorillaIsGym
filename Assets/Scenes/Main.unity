@@ -1098,7 +1098,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6080027969993003509, guid: 10cd04cadd6ac374a9af2f52260462e7, type: 3}
       propertyPath: manpukuDecreasePerSec
-      value: 50
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6080027969993003509, guid: 10cd04cadd6ac374a9af2f52260462e7, type: 3}
       propertyPath: friendlinessIncreaseAmount
