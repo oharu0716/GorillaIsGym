@@ -15,8 +15,8 @@ public class GameController_kin : MonoBehaviour
     }
     State state;
     //kin:固定値で１０％は減らす。
-    int score =10;
-     // kin: scoreの値を外部から取得するためのpublicプロパティ
+    int score = 10;
+    // kin: scoreの値を外部から取得するためのpublicプロパティ
     public int CurrentScore
     {
         get { return score; }
@@ -36,11 +36,17 @@ public class GameController_kin : MonoBehaviour
 
     // kin: リロードが可能かどうかを管理するフラグ
     private bool isReloadEnabled = false;
+
+    //BGM関係
+    AudioManager exercise_am;
+    public AudioClip exerciseBGM_Start;
+    public AudioClip exerciseBGM_End;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         ps = PlayerStatus.instance;
-        // ★kin: startButtonのCanvasGroupを取得
+        exercise_am = AudioManager.Instance;
+        //kin: startButtonのCanvasGroupを取得
         if (startButton != null)
         {
             startButtonCanvasGroup = startButton.GetComponent<CanvasGroup>();
@@ -79,11 +85,14 @@ public class GameController_kin : MonoBehaviour
         scoreText.text = "Score:" + 0;
         stateText.gameObject.SetActive(true);
         //stateText.text = "Ready";
+        //BGM
+
+        exercise_am.PlayBGM(exerciseBGM_Start);
         if (EndPanel != null)
         {
             EndPanel.SetActive(false);
         }
-        // kin: すべてのScrollObject_kinを無効にする
+        //kin: すべてのScrollObject_kinを無効にする
         ScrollObject_kin[] scrollObjects = FindObjectsByType<ScrollObject_kin>(FindObjectsSortMode.None);
         foreach (ScrollObject_kin so in scrollObjects) so.enabled = false;
 
@@ -176,7 +185,9 @@ public class GameController_kin : MonoBehaviour
     public void GameOver()
     {
         state = State.GameOver;
-        // kin: リロードを無効にし、コルーチンを開始
+        //BGM
+        exercise_am.PlayBGM(exerciseBGM_End);
+        //kin: リロードを無効にし、コルーチンを開始
         isReloadEnabled = false;
         StartCoroutine(EnableReloadAfterDelay(2f));
 
