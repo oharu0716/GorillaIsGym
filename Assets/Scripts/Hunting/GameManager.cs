@@ -169,6 +169,10 @@ public class GameManager : MonoBehaviour
 
         ps.AddFood(score, gotRareItem);
 
+        //ゲージ更新
+        ps.DecreaseManpuku();
+        ps.IncreaseStress();
+
     }
 
     void ResetCamera()
