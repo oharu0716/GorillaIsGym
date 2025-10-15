@@ -38,7 +38,7 @@ public class GaugeUIController : MonoBehaviour
 
     void Start()
     {
-        am = AudioManager.Instance; 
+        am = AudioManager.Instance;
         ps = PlayerStatus.instance;
         ps.RefreshUI(); // ← ここで ui を再取得
 
@@ -78,18 +78,7 @@ public class GaugeUIController : MonoBehaviour
         stressGauge.DOFillAmount(ps.stress / 100f, duration)
         .OnComplete(() =>
         {
-            if (ps.friendliness >= 100 && ps.isEvolution1 == false)
-            {
-                ps.isEffect = true;
-                ps.isEvolution1 = true;
-                evolutionManager.Evolution();
-            }
-            else if (ps.friendliness >= 200 && ps.isEvolution2 == false)
-            {
-                ps.isEffect = true;
-                ps.isEvolution2 = true;
-                evolutionManager.Evolution();
-            }
+            StartCoroutine("Hantei");
         }); ;
     }
 
@@ -160,5 +149,38 @@ public class GaugeUIController : MonoBehaviour
     public void Restart()
     {
         restartButton.SetActive(true);
+    }
+
+    IEnumerator Hantei()
+    {
+        yield return new WaitForSeconds(2f);
+        //死亡処理
+            if ((ps.stress >= 100 || ps.manpuku <= 0)  && ps.isDeath == false)
+            {
+                ps.isDeath = true;
+
+                if (ps.friendliness < 100)
+                {
+                    Debug.Log("Blend呼ぶ");
+                    Blend(0);
+                }
+                else if (ps.friendliness < 200)
+                {
+                    Blend(2);
+                }
+            }
+
+            if (ps.friendliness >= 100 && ps.isEvolution1 == false)
+            {
+                ps.isEffect = true;
+                ps.isEvolution1 = true;
+                evolutionManager.Evolution();
+            }
+            else if (ps.friendliness >= 200 && ps.isEvolution2 == false)
+            {
+                ps.isEffect = true;
+                ps.isEvolution2 = true;
+                evolutionManager.Evolution();
+            }
     }
 }
