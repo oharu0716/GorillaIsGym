@@ -1284,6 +1284,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: ae8abbc775308e14ba460f9a4ba2346f, type: 3}
     - target: {fileID: 934746488376992264, guid: 8ee75e3b8b934ec4cb774a45529c6f9a, type: 3}
+      propertyPath: gaugeUI
+      value: 
+      objectReference: {fileID: 846928041}
+    - target: {fileID: 934746488376992264, guid: 8ee75e3b8b934ec4cb774a45529c6f9a, type: 3}
       propertyPath: kirakira
       value: 
       objectReference: {fileID: 8300000, guid: 4a949fb7f8496cd46a62295da0dcaa01, type: 3}
@@ -2007,6 +2011,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4502495758338035522, guid: 00fea5c1b6ee07f4aa3f7c598135a13b, type: 3}
+      propertyPath: evolutionBGM
+      value: 
+      objectReference: {fileID: 8300000, guid: 674f402d272ca4346bc987a4e1b5a105, type: 3}
     - target: {fileID: 6423833190140578036, guid: 00fea5c1b6ee07f4aa3f7c598135a13b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 225.59741
