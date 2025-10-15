@@ -5,6 +5,7 @@ public class Gun : MonoBehaviour
     public Camera cam;
     public float range = 100f;
     public ScoreManager scoreManager;
+    public GameManager gameManager;
 
     void Update()
     {
