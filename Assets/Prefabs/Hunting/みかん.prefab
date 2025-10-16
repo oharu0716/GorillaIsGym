@@ -119,6 +119,7 @@ MonoBehaviour:
   lifeTime: 5
   hitEffectPrefab: {fileID: 6104069214166605762, guid: e2b3b21aed6cd6343810cfd8e79489c5, type: 3}
   scorePopupPrefab: {fileID: 6750033112327399836, guid: 88b075ff2b458584bbc2f4a15a5489e7, type: 3}
+  hitsound: {fileID: 8300000, guid: f6ce5197c5297784d9eb9a95596c3aa1, type: 3}
 --- !u!135 &7091733233348807186
 SphereCollider:
   m_ObjectHideFlags: 0

@@ -7,8 +7,11 @@ public class Target : MonoBehaviour
     public GameObject hitEffectPrefab;
     public GameObject scorePopupPrefab;
 
+    AudioManager am;
+    public AudioClip hitsound;
     void Start()
     {
+        am = AudioManager.Instance;
         Destroy(gameObject, lifeTime);
     }
 
@@ -34,6 +37,7 @@ public class Target : MonoBehaviour
             }
         }
 
+        am.PlaySE(hitsound,3f);
         Destroy(gameObject);
     }
 }

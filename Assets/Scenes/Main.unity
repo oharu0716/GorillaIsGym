@@ -1257,6 +1257,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6080027969993003509, guid: 10cd04cadd6ac374a9af2f52260462e7, type: 3}
+      propertyPath: isEvolution2
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6080027969993003509, guid: 10cd04cadd6ac374a9af2f52260462e7, type: 3}
       propertyPath: prev_manpuku
       value: 100
       objectReference: {fileID: 0}
@@ -1290,7 +1294,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6080027969993003509, guid: 10cd04cadd6ac374a9af2f52260462e7, type: 3}
       propertyPath: manpukuDecreaseAmount
-      value: 100
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6080027969993003509, guid: 10cd04cadd6ac374a9af2f52260462e7, type: 3}
       propertyPath: manpukuDecreasePerSec

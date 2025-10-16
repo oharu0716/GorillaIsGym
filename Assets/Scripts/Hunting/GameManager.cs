@@ -34,10 +34,14 @@ public class GameManager : MonoBehaviour
     PlayerStatus ps;
     bool uketukenai = false;
 
+    AudioManager am;
+    public AudioClip gameBGM;
+
 
 
     void Start()
     {
+        am = AudioManager.Instance;
         ps = PlayerStatus.instance;
         //パネルの表示の制御
         startPanel.SetActive(true);
@@ -79,6 +83,7 @@ public class GameManager : MonoBehaviour
 
     void StartGame()
     {
+        am.PlayBGM(gameBGM);
         startPanel.SetActive(false);
         gameUIPanel.SetActive(true);
         resultPanel.SetActive(false);
@@ -189,6 +194,7 @@ public class GameManager : MonoBehaviour
     
     void GotoMain()
     {
+        am.PlayBGM(am.mainBGM);
         SceneManager.LoadScene("Main");
     }
 }

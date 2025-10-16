@@ -16,6 +16,13 @@ public class TargetSpawner : MonoBehaviour
 
     private bool isSpawning = false;//ターゲットを出しているかどうか
     private bool rareSpawned = false;//レアターゲットをすでに出したか
+    AudioManager am;
+    public AudioClip oto;
+
+    void Start()
+    {
+        am = AudioManager.Instance;
+    }
 
     //ターゲット出現をスタート
     public void StartSpawning()
@@ -96,6 +103,9 @@ public class TargetSpawner : MonoBehaviour
             // 画面中央（原点）に出す
             Vector3 centerPos = new Vector3(0f, 1.5f, 0f);
             Instantiate(meatPrefab, centerPos, Quaternion.identity);
+
+            am.PlaySE(oto);
+
 
             Debug.Log("🌟 レアターゲット（肉）が出現！");
         }
