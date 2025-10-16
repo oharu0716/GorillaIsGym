@@ -137,6 +137,7 @@ public class GaugeUIController : MonoBehaviour
 
     public void BlendEvolution(int i)
     {
+        Debug.Log(i);
         Debug.Log("BlendEvo内");
         // 最初はAが完全に見えてて、Bは透明
         images[i + 2].SetActive(true);
