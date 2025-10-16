@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.Rendering;
 public class GameController_kin : MonoBehaviour
 {
     //ゲームスタート
@@ -50,11 +51,7 @@ public class GameController_kin : MonoBehaviour
         if (startButton != null)
         {
             startButtonCanvasGroup = startButton.GetComponent<CanvasGroup>();
-            // CanvasGroupがない場合はAddComponentしても良いが、ここではnullチェックで対応
-            if (startButtonCanvasGroup == null)
-            {
-                Debug.LogWarning("startButton に CanvasGroup がアタッチされていません。フェードインは stateText のみで実行されます。");
-            }
+    
         }
         Ready();
     }
@@ -253,7 +250,8 @@ public class GameController_kin : MonoBehaviour
     IEnumerator SafeReloadCoroutine()
     {
         yield return null;
-        SceneManager.LoadScene("Main");
+        exercise_am.PlayBGM(exercise_am.mainBGM);
+         SceneManager.LoadScene("Main");
     }
     public void IncreaseScore()
     {

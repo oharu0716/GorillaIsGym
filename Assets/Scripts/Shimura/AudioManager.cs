@@ -5,6 +5,10 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
+    public AudioClip mainBGM;
+    public AudioClip evolutionBGM;
+    public AudioClip buttonclick;
+
     [Header("BGM")]
     public AudioSource bgmSource;
     public float bgmFadeDuration = 1f;
@@ -57,5 +61,15 @@ public class AudioManager : MonoBehaviour
     {
         if (clip == null) return;
         seSource.PlayOneShot(clip, volume);
+    }
+
+    public void StopSE()
+    {
+        seSource.Stop();
+    }
+
+    public void ButtonClick()
+    {
+        PlaySE(buttonclick);
     }
 }

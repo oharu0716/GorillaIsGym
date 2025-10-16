@@ -4,101 +4,191 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    //InspectorでCanvas内の各Panelをドラッグして設定します
     [Header("Panels")]
-    //ゲーム開始前の説明画面（タイトル）
-    public GameObject startPanel;
-    //プレイ中のUI（残り時間・スコアなど）
-    public GameObject gameUIPanel;
-    //プレイ終了後に結果を表示する画面
-    public GameObject resultPanel;
+    public GameObject startPanel;//スタート画面
+    public GameObject gameUIPanel;//プレイ中に表示するタイマー
+    public GameObject resultPanel;//ゲーム終了後の結果画面
 
     [Header("UI Elements")]
-    //残り時間を表示
-    public TextMeshProUGUI timeText;
-    //最終スコアを表示
-    public TextMeshProUGUI resultScoreText;
-    //獲得アイテム数を表示
-    public TextMeshProUGUI itemText;
+    public TextMeshProUGUI timeText;//残り時間
+    public TextMeshProUGUI resultScoreText;//最終スコア
+    public TextMeshProUGUI resultRankText;  // ← 評価を表示
+    public TextMeshProUGUI resultMessageText; // ← メッセージを表示
+    public TextMeshProUGUI resultItemText; // ← 獲得アイテムを表示
+    public TextMeshProUGUI rareItemText; // ← レアアイテム結果
 
-    //1プレイの制限時間（秒単位）Inspectorで変更可能
     [Header("Game Settings")]
-    public float gameTime = 30f;
+    public float gameTime = 30f;//1playの制限時間
 
-    //ターゲット生成スクリプト（TargetSpawner.cs）への参照 
-    // GameManagerがターゲット生成の開始／停止を指示します。
+    //ターゲットを出すスクリプトへの参照
+    //ゲーム中だけスクリプトを出す
     [Header("References")]
     public TargetSpawner targetSpawner;
+    public SimpleCameraLook cameraLook;
+    public Transform cameraDefaultTransform;
 
-    private float timer;//残り時間
-    private bool isPlaying = false;//プレイ中かどうかのフラグ
-    private int itemCount = 0;//取得したアイテム数
+    private float timer;//残り時間を計算
+    private bool isPlaying = false;//現在がゲーム中か
+    private bool gotRareItem = false;//レアアイテムをとったか
+
+    PlayerStatus ps;
+    bool uketukenai = false;
+
+
 
     void Start()
     {
-        //初期状態 : スタートパネルだけ表示
+        ps = PlayerStatus.instance;
+        //パネルの表示の制御
         startPanel.SetActive(true);
         gameUIPanel.SetActive(false);
         resultPanel.SetActive(false);
 
-        //ゲーム開始前はターゲット生成停止
+        //タイトル表示中はターゲットを出現しないように
         if (targetSpawner != null)
             targetSpawner.StopSpawning();
+
+        //初期位置にカメラを戻して固定
+        ResetCamera();
+        if (cameraLook != null) cameraLook.enabled = false;
     }
 
     void Update()
     {
         if (!isPlaying)
         {
-            //クリックされたら StartGame() を呼んでゲーム開始。
-            if (Input.GetMouseButtonDown(0))
+            //クリックでスタートゲームを呼び出し
+            if (Input.GetMouseButtonDown(0)&& uketukenai==false)
             {
                 StartGame();
             }
             return;
         }
 
-        //ゲーム中の時間減少処理
+        //毎フレームtimerを減らす
         timer -= Time.deltaTime;
-        //少数切り上げで整数表示（29.8→30）
+        //残り時間をUIに表示
         timeText.text = $"TIME: {Mathf.Ceil(timer)}";
 
+        //時間が0になったらEndGameで終了
         if (timer <= 0)
         {
-            //残り時間が0になったら EndGame() を呼ぶ
             EndGame();
         }
     }
 
     void StartGame()
     {
-        //タイトルパネルを非表示、ゲームUIを表示。
         startPanel.SetActive(false);
         gameUIPanel.SetActive(true);
         resultPanel.SetActive(false);
 
-        //タイマーとスコアをリセット。
+        //タイマーとスコアを初期化
         timer = gameTime;
         ScoreManager.score = 0;
-        //プレイ中フラグをONにする
+        gotRareItem = false;
+
+        //ゲーム状態にする
         isPlaying = true;
 
-        //ターゲット生成を開始
+        //カメラ操作を有効化
+        if (cameraLook != null) cameraLook.enabled = true;
+
+        //ターゲットの生成を開始
         if (targetSpawner != null)
             targetSpawner.StartSpawning();
     }
-    
+
+    //ほかのスクリプトから呼び出される
+    //特定のターゲットを撃った時に呼び出すとレアアイテムのフラグが立つ
+    public void GetRareItem()
+    {
+        gotRareItem = true;
+        Debug.Log("🌟 レアアイテムを取得！");
+    }
+
     void EndGame()
     {
+        uketukenai = true;
+        Invoke("GotoMain", 4f);
         isPlaying = false;
         gameUIPanel.SetActive(false);
         resultPanel.SetActive(true);
 
+        //ターゲットの出現を停止
         if (targetSpawner != null)
             targetSpawner.StopSpawning();
 
-        //スコアとアイテム数を表示
-        resultScoreText.text = $"SCORE: {ScoreManager.score}";
-        itemText.text = $"獲得アイテム:{itemCount}個";
+        //カメラを固定に戻す
+        ResetCamera();
+        if (cameraLook != null) cameraLook.enabled = false;
+
+        //マウスカーソルを表示・ロック解除
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        int score = ScoreManager.score;
+        resultScoreText.text = $"SCORE: {score}";
+
+        // ▼ 評価判定 ▼
+        string rank = "";
+        string message = "";
+        string items = "";
+
+        if (score < 30000)
+        {
+            rank = "C";
+            message = "次こそは頑張ろう！";
+            items = "獲得アイテム：りんご、さかな、チーズ";
+        }
+        else if (score < 60000)
+        {
+            rank = "B";
+            message = "たくさんとれたね！";
+            items = "獲得アイテム：りんごx2、さかな、チーズ、骨付き肉";
+        }
+        else
+        {
+            rank = "A";
+            message = "素晴らしい！あなたは狩りマスター！";
+            items = "獲得アイテム：りんご、さかな、チーズx2、骨付き肉x2";
+        }
+
+        resultRankText.text = $"評価：{rank}";
+        resultMessageText.text = message;
+        resultItemText.text = items;
+
+        // 🍖レアアイテム結果
+        if (rareItemText != null)
+        {
+            if (gotRareItem)
+                rareItemText.text = "ファミチキをゲット！";
+            else
+                rareItemText.text = "レアアイテムは見つからなかった…";
+        }
+
+        ps.AddFood(score, gotRareItem);
+
+        //ゲージ更新
+        ps.DecreaseManpuku();
+        ps.IncreaseStress();
+
+    }
+
+    void ResetCamera()
+    {
+        //カメラの位置と角度をリセット
+        if (cameraDefaultTransform != null && cameraLook != null)
+        {
+            cameraLook.transform.SetPositionAndRotation(
+                cameraDefaultTransform.position,
+                cameraDefaultTransform.rotation
+            );
+        }
+    }
+    
+    void GotoMain()
+    {
+        SceneManager.LoadScene("Main");
     }
 }

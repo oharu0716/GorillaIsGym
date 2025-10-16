@@ -5,6 +5,7 @@ using UnityEditor;
 using System.Collections;
 using UnityEngine.TextCore.Text;
 using TMPro;
+using UnityEngine.Rendering;
 
 public class GaugeUIController : MonoBehaviour
 {
@@ -29,10 +30,15 @@ public class GaugeUIController : MonoBehaviour
     PlayerStatus ps;
     public HeartUIManager heart;
     public EvolutionManager evolutionManager;
+    AudioManager am;
 
+    //効果音
+    public AudioClip gaugeSound;
+    public AudioClip death;
 
     void Start()
     {
+        am = AudioManager.Instance;
         ps = PlayerStatus.instance;
         ps.RefreshUI(); // ← ここで ui を再取得
 
@@ -55,8 +61,9 @@ public class GaugeUIController : MonoBehaviour
         DOVirtual.DelayedCall(1.7f, () => UpdateAllGauges());
     }
 
-    void UpdateAllGauges()
+    public void UpdateAllGauges()
     {
+        am.PlaySE(gaugeSound);
         heart.UpdateLife(ps.hp);
         if (ps.prev_friendliness < 100)
         {
@@ -71,18 +78,7 @@ public class GaugeUIController : MonoBehaviour
         stressGauge.DOFillAmount(ps.stress / 100f, duration)
         .OnComplete(() =>
         {
-            if (ps.friendliness >= 100 && ps.isEvolution1 == false)
-            {
-                ps.isEffect = true;
-                ps.isEvolution1 = true;
-                evolutionManager.Evolution();
-            }
-            else if (ps.friendliness >= 200 && ps.isEvolution2 == false)
-            {
-                ps.isEffect = true;
-                ps.isEvolution2 = true;
-                evolutionManager.Evolution();
-            }
+            StartCoroutine("Hantei");
         }); ;
     }
 
@@ -127,6 +123,8 @@ public class GaugeUIController : MonoBehaviour
             images[i].SetActive(false);
             UIs.SetActive(false);
             popUp.SetActive(true);
+            am.StopBGM();
+            am.PlaySE(death);
             popUp.GetComponentInChildren<TextMeshProUGUI>().text = "たまポンは死んでしまった・・・・";
             Invoke("Restart", 2f);
         }); ;
@@ -151,5 +149,38 @@ public class GaugeUIController : MonoBehaviour
     public void Restart()
     {
         restartButton.SetActive(true);
+    }
+
+    IEnumerator Hantei()
+    {
+        yield return new WaitForSeconds(2f);
+        //死亡処理
+            if ((ps.stress >= 100 || ps.manpuku <= 0)  && ps.isDeath == false)
+            {
+                ps.isDeath = true;
+
+                if (ps.friendliness < 100)
+                {
+                    Debug.Log("Blend呼ぶ");
+                    Blend(0);
+                }
+                else if (ps.friendliness < 200)
+                {
+                    Blend(2);
+                }
+            }
+
+            if (ps.friendliness >= 100 && ps.isEvolution1 == false)
+            {
+                ps.isEffect = true;
+                ps.isEvolution1 = true;
+                evolutionManager.Evolution();
+            }
+            else if (ps.friendliness >= 200 && ps.isEvolution2 == false)
+            {
+                ps.isEffect = true;
+                ps.isEvolution2 = true;
+                evolutionManager.Evolution();
+            }
     }
 }

@@ -16,7 +16,7 @@ public class PlayerStatus : MonoBehaviour
     public int hp = 0;
     public List<Food> food_list;
 
-    bool isDeath = false;
+    public bool isDeath = false;
     public bool isEvolution1;
     public bool isEvolution2;
     public bool isEffect;
@@ -67,11 +67,7 @@ public class PlayerStatus : MonoBehaviour
         food_list.Add(new FamiChick());
 
         //テスト用に一個ずつ食べ物追加
-        food_list[0].Num++;
-        food_list[1].Num++;
-        food_list[2].Num++;
-        food_list[3].Num++;
-        food_list[4].Num++;
+        food_list[0].Num += 2;
     }
 
     public void RefreshUI()
@@ -92,17 +88,26 @@ public class PlayerStatus : MonoBehaviour
     public void AddFood(int score, bool Fami)
     {
         //スコアはまだ仮
-        if (score < 100)
+        if (score <= 30000)
         {
+            food_list[0].Num++;
+            food_list[1].Num++;
+            food_list[2].Num++;
+        }
+        else if (score <= 60000)
+        {
+            food_list[0].Num += 2;
+            food_list[1].Num++;
+            food_list[2].Num++;
+            food_list[3].Num++;
 
         }
-        else if (score < 200)
+        else
         {
-
-        }
-        else if (score < 300)
-        {
-
+            food_list[0].Num++;
+            food_list[1].Num++;
+            food_list[2].Num += 2;
+            food_list[3].Num += 2;
         }
 
         if (Fami)
@@ -140,43 +145,11 @@ public class PlayerStatus : MonoBehaviour
         //狩りと運動で固定値減少
         manpuku = Mathf.Max(0, manpuku - manpukuDecreaseAmount);
         Debug.Log($"満腹度Down!現在の満腹度 {manpuku}" + "減った値" + manpukuDecreaseAmount);
-
-        //死亡処理
-        if (manpuku == 0 && isDeath == false)
-        {
-            isDeath = true;
-
-            if (friendliness < 100)
-            {
-                Debug.Log("Blend呼ぶ");
-                ui.Blend(0);
-            }
-            else if (friendliness < 200)
-            {
-                ui.Blend(2);
-            }
-        }
     }
 
     public void DecreaseManpukuPerSec()
     {
         manpuku = Mathf.Max(0, manpuku - manpukuDecreasePerSec);
-
-        //死亡処理
-        if (manpuku == 0 && isDeath == false)
-        {
-            isDeath = true;
-
-            if (friendliness < 100)
-            {
-                Debug.Log("Blend呼ぶ");
-                ui.Blend(0);
-            }
-            else if (friendliness < 200)
-            {
-                ui.Blend(2);
-            }
-        }
     }
 
     public void IncreaseStress()
@@ -184,43 +157,11 @@ public class PlayerStatus : MonoBehaviour
         //狩りでのみストレス固定値増加
         stress = Mathf.Min(max_stress, stress + stressIncreaseAmount);
         Debug.Log($"ストレスUP! 現在のストレス度 {stress}" + "増えた値" + stressIncreaseAmount);
-
-        //死亡処理
-        if (stress >= 100 && isDeath == false)
-        {
-            isDeath = true;
-
-            if (friendliness < 100)
-            {
-                Debug.Log("Blend呼ぶ");
-                ui.Blend(0);
-            }
-            else if (friendliness < 200)
-            {
-                ui.Blend(2);
-            }
-        }
     }
 
     public void IncreaseStressPerSec()
     {
         stress = Mathf.Min(max_stress, stress + stressIncreasePerSec);
-
-        //死亡処理
-        if (stress >= 100 && isDeath == false)
-        {
-            isDeath = true;
-
-            if (friendliness < 100)
-            {
-                Debug.Log("Blend呼ぶ");
-                ui.Blend(0);
-            }
-            else if (friendliness < 200)
-            {
-                ui.Blend(2);
-            }
-        }
     }
 
     public void DecreaseStress(int amount, int tag)
@@ -262,23 +203,6 @@ public class PlayerStatus : MonoBehaviour
         //狩りと運動で固定値減少
         hp = Mathf.Max(0, hp - hpDecreaseAmount);
         Debug.Log($"HP減少！ 現在のHP: {hp}" + "減った値" + hpDecreaseAmount);
-
-        //死亡処理
-        if (hp <= 0 && isDeath == false)
-        {
-            isDeath = true;
-
-            if (friendliness < 100)
-            {
-                Debug.Log("Blend呼ぶ");
-                ui.Blend(0);
-            }
-            else if (friendliness < 200)
-            {
-                ui.Blend(2);
-            }
-        }
-
     }
 
     public void IncreaseShowerPoint()

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1569848997538394095}
   m_Layer: 0
   m_Name: CheeseCube
-  m_TagString: 1000
+  m_TagString: 3000
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
