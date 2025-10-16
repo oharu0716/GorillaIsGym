@@ -64,7 +64,7 @@ public class GaugeUIController : MonoBehaviour
 
     public void UpdateAllGauges()
     {
-        cb.ChangeClickAccept(); // ← 入力無効化反映
+        //cb.NotClickAccept(); // ← 入力無効化反映
 
         am.PlaySE(gaugeSound);
         heart.UpdateLife(ps.hp);
@@ -81,6 +81,7 @@ public class GaugeUIController : MonoBehaviour
         stressGauge.DOFillAmount(ps.stress / 100f, duration)
         .OnComplete(() =>
         {
+            //cb.ClickAccept();
             StartCoroutine("Hantei");
         }); ;
     }
@@ -157,7 +158,7 @@ public class GaugeUIController : MonoBehaviour
     IEnumerator Hantei()
     {
         yield return new WaitForSeconds(2f);
-        cb.ChangeClickAccept();
+        //cb.ClickAccept();
         //死亡処理
         if ((ps.stress >= 100 || ps.manpuku <= 0) && ps.isDeath == false)
         {
