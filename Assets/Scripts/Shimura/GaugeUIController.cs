@@ -31,6 +31,7 @@ public class GaugeUIController : MonoBehaviour
     public HeartUIManager heart;
     public EvolutionManager evolutionManager;
     AudioManager am;
+    public ClickBlocker cb;
 
     //効果音
     public AudioClip gaugeSound;
@@ -63,6 +64,8 @@ public class GaugeUIController : MonoBehaviour
 
     public void UpdateAllGauges()
     {
+        cb.ChangeClickAccept(); // ← 入力無効化反映
+
         am.PlaySE(gaugeSound);
         heart.UpdateLife(ps.hp);
         if (ps.prev_friendliness < 100)
@@ -84,7 +87,6 @@ public class GaugeUIController : MonoBehaviour
 
     void Update()
     {
-
         timer += Time.deltaTime; // 経過時間を加算
 
         if (timer >= 1f) // 1秒経過したら
@@ -96,6 +98,7 @@ public class GaugeUIController : MonoBehaviour
                 manpukuGauge.DOFillAmount(ps.manpuku / 100f, duration);
                 ps.IncreaseStressPerSec();
                 stressGauge.DOFillAmount(ps.stress / 100f, duration);
+
             }
         }
     }
@@ -154,33 +157,34 @@ public class GaugeUIController : MonoBehaviour
     IEnumerator Hantei()
     {
         yield return new WaitForSeconds(2f);
+        cb.ChangeClickAccept();
         //死亡処理
-            if ((ps.stress >= 100 || ps.manpuku <= 0)  && ps.isDeath == false)
-            {
-                ps.isDeath = true;
+        if ((ps.stress >= 100 || ps.manpuku <= 0) && ps.isDeath == false)
+        {
+            ps.isDeath = true;
 
-                if (ps.friendliness < 100)
-                {
-                    Debug.Log("Blend呼ぶ");
-                    Blend(0);
-                }
-                else if (ps.friendliness < 200)
-                {
-                    Blend(2);
-                }
+            if (ps.friendliness < 100)
+            {
+                Debug.Log("Blend呼ぶ");
+                Blend(0);
             }
+            else if (ps.friendliness < 200)
+            {
+                Blend(2);
+            }
+        }
 
-            if (ps.friendliness >= 100 && ps.isEvolution1 == false)
-            {
-                ps.isEffect = true;
-                ps.isEvolution1 = true;
-                evolutionManager.Evolution();
-            }
-            else if (ps.friendliness >= 200 && ps.isEvolution2 == false)
-            {
-                ps.isEffect = true;
-                ps.isEvolution2 = true;
-                evolutionManager.Evolution();
-            }
+        if (ps.friendliness >= 100 && ps.isEvolution1 == false)
+        {
+            ps.isEffect = true;
+            ps.isEvolution1 = true;
+            evolutionManager.Evolution();
+        }
+        else if (ps.friendliness >= 200 && ps.isEvolution2 == false)
+        {
+            ps.isEffect = true;
+            ps.isEvolution2 = true;
+            evolutionManager.Evolution();
+        }
     }
 }
